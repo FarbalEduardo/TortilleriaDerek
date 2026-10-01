@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- 1. Sombra suave de elevación exterior de la tortilla doblada en 'D' -->
+    <path
+        android:pathData="M39,30 C39,26 42,23 46,23 C59,23 77.5,35 77.5,54 C77.5,73 59,85 46,85 C42,85 39,82 39,78 Z"
+        android:fillColor="#33000000" />
+
+    <!-- 2. Capa posterior / cara de abajo de la tortilla doblada (Semicírculo derecho de la 'D') -->
+    <path
+        android:pathData="M39.5,28 C39.5,25 42,23.5 45,23.5 C59.5,23.5 76,36 76,54 C76,72 59.5,84.5 45,84.5 C42,84.5 39.5,83 39.5,80 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="40"
+                android:startY="24"
+                android:endX="76"
+                android:endY="84">
+                <item android:offset="0.0" android:color="#F59E0B" />
+                <item android:offset="0.5" android:color="#D97706" />
+                <item android:offset="1.0" android:color="#B45309" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 3. Sombra de oclusión interna donde el pliegue superior cubre la cara inferior -->
+    <path
+        android:pathData="M40,24 C50,24 64,36 64,54 C64,72 50,84 40,84 Z"
+        android:fillColor="#26000000" />
+
+    <!-- 4. Capa frontal / pliegue superior de la tortilla (Mitad izquierda y curva superior de la 'D') -->
+    <path
+        android:pathData="M39.5,27.5 C39.5,24.5 42.5,23.5 45.5,23.5 C54.5,23.5 63,36 63,54 C63,72 54.5,84.5 45.5,84.5 C42.5,84.5 39.5,83.5 39.5,80.5 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="40"
+                android:startY="24"
+                android:endX="63"
+                android:endY="84">
+                <item android:offset="0.0" android:color="#FEF08A" />
+                <item android:offset="0.3" android:color="#FDE047" />
+                <item android:offset="0.7" android:color="#FACC15" />
+                <item android:offset="1.0" android:color="#EAB308" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 5. Lomo doblado izquierdo (El pliegue cilíndrico redondeado y suave de la tortilla) -->
+    <path
+        android:pathData="M38.5,28.5 C38.5,25.5 40.5,24 43.5,24 C45,24 46,25 46,26.5 L46,81.5 C46,83 45,84 43.5,84 C40.5,84 38.5,82.5 38.5,79.5 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="38.5"
+                android:startY="54"
+                android:endX="46"
+                android:endY="54">
+                <item android:offset="0.0" android:color="#FEF9C3" />
+                <item android:offset="0.6" android:color="#FDE047" />
+                <item android:offset="1.0" android:color="#CA8A04" />
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- 6. Motas artesanales tostadas de comal en la superficie de la tortilla (Puntos discretos de textura) -->
+    <!-- Mota superior frontal -->
+    <path
+        android:pathData="M43,34 A1.2,1.2 0 1,1 43,36.4 A1.2,1.2 0 1,1 43,34"
+        android:fillColor="#8C4A00" />
+    <!-- Mota media frontal 1 -->
+    <path
+        android:pathData="M49,43 A1.5,1.5 0 1,1 49,46 A1.5,1.5 0 1,1 49,43"
+        android:fillColor="#9A5005" />
+    <!-- Mota media frontal 2 -->
+    <path
+        android:pathData="M44,53 A1.1,1.1 0 1,1 44,55.2 A1.1,1.1 0 1,1 44,53"
+        android:fillColor="#8C4A00" />
+    <!-- Mota frontal derecha -->
+    <path
+        android:pathData="M54,58 A1.3,1.3 0 1,1 54,60.6 A1.3,1.3 0 1,1 54,58"
+        android:fillColor="#9A5005" />
+    <!-- Mota inferior frontal -->
+    <path
+        android:pathData="M45,71 A1.4,1.4 0 1,1 45,73.8 A1.4,1.4 0 1,1 45,71"
+        android:fillColor="#8C4A00" />
+    <!-- Mota cara posterior (borde derecho de la 'D') -->
+    <path
+        android:pathData="M68,45 A1.3,1.3 0 1,1 68,47.6 A1.3,1.3 0 1,1 68,45"
+        android:fillColor="#78350F" />
+    <path
+        android:pathData="M69,61 A1.1,1.1 0 1,1 69,63.2 A1.1,1.1 0 1,1 69,61"
+        android:fillColor="#78350F" />
+
+</vector>

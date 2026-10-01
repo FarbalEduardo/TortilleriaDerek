@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="es" style=""><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Control de Repartidores - Tortillería</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#FF6B00',
+              dark: '#E05E00',
+              light: '#FFF2E8',
+              surface: '#FFF8F5',
+            }
+          },
+          boxShadow: {
+            'card': '0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)',
+            'card-hover': '0 10px 25px -4px rgba(255, 107, 0, 0.12), 0 4px 10px -2px rgba(0, 0, 0, 0.04)',
+            'header': '0 12px 28px -6px rgba(255, 107, 0, 0.35)',
+            'nav': '0 -4px 20px rgba(0, 0, 0, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      vertical-align: middle;
+    }
+    .material-symbols-outlined.fill-1 {
+      font-variation-settings: 'FILL' 1, 'wght' 600;
+    }
+    /* Hide scrollbars smoothly */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-[#F8F9FA] text-[#1E293B] antialiased flex justify-center min-h-screen">
+<!-- Mobile Container (Max 430px for native app viewport) -->
+<main class="w-full max-w-[430px] min-h-screen bg-[#F8F9FA] relative flex flex-col pb-28 select-none">
+<!-- Top Content Area with Edge-to-Edge Orange Header -->
+<div class="p-4 pt-5 space-y-4">
+<!-- 1. Header: Total Venta del Día (Identical to reference) -->
+<section class="bg-gradient-to-br from-[#FF7300] to-[#FA6400] text-white p-5 rounded-[28px] shadow-header relative overflow-hidden">
+<!-- Background subtle decorative glow -->
+<div class="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute -left-10 -bottom-10 w-36 h-36 bg-black/5 rounded-full blur-xl pointer-events-none"></div>
+<!-- Top Row: Date Pill and Cerrar Turno Button -->
+<div class="flex items-center justify-between relative z-10 mb-4">
+<div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold text-white tracking-tight">
+<span class="material-symbols-outlined text-[15px] leading-none">calendar_today</span>
+<span class="">Hoy, Lun 7 Sept</span>
+</div>
+<button class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white text-[#FA6400] rounded-full text-xs font-bold shadow-sm hover:bg-orange-50 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[15px] leading-none">lock_clock</span>
+<span class="">Cerrar Turno</span>
+</button>
+</div>
+<!-- Metric Label -->
+<div class="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-orange-100 uppercase mb-1 relative z-10">
+<span class="material-symbols-outlined text-[16px] leading-none">point_of_sale</span>
+<span class="">Total Venta del Día</span>
+</div>
+<!-- Big Metric & Badge -->
+<div class="flex items-baseline justify-between relative z-10">
+<div class="flex items-baseline gap-1.5">
+<span class="text-[34px] font-extrabold tracking-tight leading-none">$18,450.00</span>
+<span class="text-xs font-bold text-orange-100 uppercase">MXN</span>
+</div>
+<div class="inline-flex items-center gap-1 px-2.5 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-bold text-white">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span class="">+14.2%</span>
+</div>
+</div>
+</section>
+<!-- 2. Segmented Tabs Switcher (Repartidores active) -->
+<section class="bg-[#ECEEF2] p-1.5 rounded-full flex items-center shadow-inner">
+<!-- Mostrador Tab (Muted) -->
+<button class="flex-1 py-2.5 px-4 rounded-full flex items-center justify-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-800 transition-colors active:scale-98" type="button">
+<span class="material-symbols-outlined text-[18px]">storefront</span>
+<span class="">Mostrador</span>
+</button>
+<!-- Repartidores Tab (Active Solid Orange) -->
+<button class="flex-1 py-2.5 px-4 bg-[#FF6B00] rounded-full flex items-center justify-center gap-2 text-sm font-bold text-white shadow-md active:scale-98 transition-all" type="button"><span class="material-symbols-outlined text-[18px] fill-1">two_wheeler</span><span class="whitespace-nowrap">Repartidores</span></button>
+</section>
+<!-- 3. Section Header: Control de Repartidores & 4 Rutas Activas -->
+<div class="flex items-center justify-between px-1 pt-1">
+<h2 class="text-lg font-bold text-slate-900 tracking-tight">Control de Repartidores</h2>
+<div class="inline-flex items-center gap-1 px-3 py-1 bg-[#FDEEE3] text-[#D95300] rounded-full text-xs font-bold border border-orange-200/60">
+<span class="w-2 h-2 rounded-full bg-[#FF6B00] animate-pulse"></span>
+<span class="">4 Rutas Activas</span>
+</div>
+</div>
+<!-- 4. Interactive Driver Cards List -->
+<div class="space-y-3.5">
+<!-- CARD 1: En Ruta / Por Liquidar -->
+<article class="bg-white rounded-[22px] p-4 shadow-card border border-slate-100 hover:border-orange-200 hover:shadow-card-hover transition-all cursor-pointer group active:scale-[0.99]" role="button" tabindex="0">
+<!-- Top Row -->
+<div class="flex items-start justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-orange-50 flex items-center justify-center text-[#FF6B00] border border-orange-100 group-hover:bg-[#FF6B00] group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[22px]">two_wheeler</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-slate-900 leading-snug">Moto 01 - Carlos Ruiz</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-orange-100 text-[#D95300] border border-orange-200/70">
+<span class="w-1.5 h-1.5 rounded-full bg-[#FF6B00]"></span>
+              En Ruta
+            </span>
+</div>
+<!-- Metrics Row -->
+<div class="grid grid-cols-2 gap-2 py-2.5 px-3 bg-slate-50/80 rounded-xl mb-3 border border-slate-100">
+<div>
+<span class="block text-[10px] font-semibold uppercase text-slate-400 tracking-wider">Carga Inicial</span>
+<span class="text-sm font-extrabold text-slate-800">90 kg</span>
+</div>
+<div>
+<span class="block text-[10px] font-semibold uppercase text-slate-400 tracking-wider">Pendiente por cobrar</span>
+<span class="text-sm font-extrabold text-[#D95300]">$1,980.00 MXN</span>
+</div>
+</div>
+<!-- Action Hint Row -->
+<div class="flex items-center justify-between pt-1 border-t border-slate-100">
+<span class="text-xs font-bold text-[#FF6B00] group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+<span class="">Tocar para registrar devolución y liquidar</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+<span class="material-symbols-outlined text-slate-300 text-[18px] group-hover:text-[#FF6B00] transition-colors">chevron_right</span>
+</div>
+</article>
+<!-- CARD 2: Sin Iniciar -->
+<article class="bg-white rounded-[22px] p-4 shadow-card border border-slate-100 hover:border-slate-300 hover:shadow-card-hover transition-all cursor-pointer group active:scale-[0.99]" role="button" tabindex="0">
+<!-- Top Row -->
+<div class="flex items-start justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200 group-hover:bg-slate-800 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[22px]">garage</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-slate-900 leading-snug">Moto 02 - Miguel Gómez</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+              Pendiente de Salida
+            </span>
+</div>
+<!-- Metrics Row -->
+<div class="py-2.5 px-3 bg-slate-50/80 rounded-xl mb-3 border border-slate-100 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-slate-400 text-[18px]">scale</span>
+<span class="text-xs font-medium text-slate-500">Sin carga asignada hoy</span>
+</div>
+<span class="text-[11px] font-bold text-slate-400 uppercase tracking-wide">0.0 kg</span>
+</div>
+<!-- Action Hint Row -->
+<div class="flex items-center justify-between pt-1 border-t border-slate-100">
+<span class="text-xs font-bold text-slate-700 group-hover:text-[#FF6B00] group-hover:translate-x-0.5 transition-all flex items-center gap-1">
+<span class="">Tocar para ingresar datos de salida</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+<span class="material-symbols-outlined text-slate-300 text-[18px] group-hover:text-[#FF6B00] transition-colors">chevron_right</span>
+</div>
+</article>
+<!-- CARD 3: Liquidado -->
+<article class="bg-white rounded-[22px] p-4 shadow-card border border-emerald-100/60 hover:border-emerald-300 hover:shadow-card-hover transition-all cursor-pointer group active:scale-[0.99]" role="button" tabindex="0">
+<!-- Top Row -->
+<div class="flex items-start justify-between gap-2 mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[22px]">check_circle</span>
+</div>
+<div>
+<h3 class="text-base font-bold text-slate-900 leading-snug">Moto 03 - Juan Pérez</h3>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100/80 text-emerald-800 border border-emerald-200">
+<span class="material-symbols-outlined text-[13px] font-bold leading-none">done</span>
+              Liquidado
+            </span>
+</div>
+<!-- Metrics Row -->
+<div class="grid grid-cols-2 gap-2 py-2.5 px-3 bg-emerald-50/40 rounded-xl mb-3 border border-emerald-100/50">
+<div>
+<span class="block text-[10px] font-semibold uppercase text-slate-400 tracking-wider">Entregado</span>
+<span class="text-sm font-extrabold text-slate-800">85 kg</span>
+</div>
+<div>
+<span class="block text-[10px] font-semibold uppercase text-slate-400 tracking-wider">Cobrado</span>
+<span class="text-sm font-extrabold text-emerald-700">$1,870.00 MXN</span>
+</div>
+</div>
+<!-- Action Hint Row -->
+<div class="flex items-center justify-between pt-1 border-t border-slate-100">
+<span class="text-xs font-semibold text-slate-500 group-hover:text-slate-800 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+<span class="">Corte completado • Ver detalle</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</span>
+<span class="material-symbols-outlined text-slate-300 text-[18px] group-hover:text-slate-600 transition-colors">chevron_right</span>
+</div>
+</article>
+</div>
+<!-- 5. Bottom Info & Secondary Action Section -->
+<section class="pt-2 space-y-2.5">
+<!-- Summary Pill Row (Total Cobrado en Reparto) -->
+<!-- Secondary Action: Historial de Rutas (Matching 'Historial de Ventas' style) -->
+<button class="w-full py-3.5 px-4 bg-white hover:bg-slate-50 active:scale-98 rounded-full border border-slate-200/80 shadow-sm flex items-center justify-center gap-2 text-sm font-bold text-slate-600 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-slate-400">history</span>
+<span class="">Historial de Rutas</span>
+</button>
+</section>
+</div>
+<!-- 6. Persistent Bottom Navigation Bar (Matching SCREEN_5) -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-white border-t border-slate-200/80 shadow-nav py-2 px-2 z-30 grid grid-cols-4 items-center"><button class="flex flex-col items-center justify-center py-1 gap-1 text-[#FA6400] font-bold transition-colors focus:outline-none" type="button">
+<div class="w-10 h-7 rounded-full bg-orange-50 flex items-center justify-center text-[#FA6400]">
+<span class="material-symbols-outlined text-[20px] fill-1">point_of_sale</span>
+</div>
+<span class="text-[11px] font-bold text-center whitespace-nowrap leading-none text-[#FA6400]">Venta</span>
+</button>
+<button class="flex flex-col items-center justify-center py-1 gap-1 text-slate-500 font-medium hover:text-slate-800 transition-colors focus:outline-none" type="button">
+<div class="w-10 h-7 rounded-full flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-[20px]">skillet</span>
+</div>
+<span class="text-[11px] font-medium text-center whitespace-nowrap leading-none text-slate-500">Producción</span>
+</button>
+<button class="flex flex-col items-center justify-center py-1 gap-1 text-slate-500 font-medium hover:text-slate-800 transition-colors focus:outline-none" type="button">
+<div class="w-10 h-7 rounded-full flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+</div>
+<span class="text-[11px] font-medium text-center whitespace-nowrap leading-none text-slate-500">Métricas</span>
+</button>
+<button class="flex flex-col items-center justify-center py-1 gap-1 text-slate-500 font-medium hover:text-slate-800 transition-colors focus:outline-none" type="button">
+<div class="w-10 h-7 rounded-full flex items-center justify-center text-slate-500">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</div>
+<span class="text-[11px] font-medium text-center whitespace-nowrap leading-none text-slate-500">Ajustes</span>
+</button></nav>
+</main>
+</body></html>

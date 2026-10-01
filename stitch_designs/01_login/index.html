@@ -1,0 +1,433 @@
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Acceso al Sistema - Turno Cerrado</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#FF6B00',
+              dark: '#E05E00',
+              light: '#FFF0E5',
+              surface: '#FFF7F2',
+            },
+            neutral: {
+              50: '#FAF9F8',
+              100: '#F4F2F0',
+              200: '#E6E3E0',
+              300: '#D5D1CD',
+              400: '#A39E99',
+              500: '#736E69',
+              600: '#524E4A',
+              700: '#383532',
+              800: '#252321',
+              900: '#181615',
+            }
+          },
+          borderRadius: {
+            '2xl': '1.25rem', // 20dp
+            '3xl': '1.5rem',  // 24dp
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #F8F9FA;
+    }
+    .tap-scale {
+      transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .tap-scale:active {
+      transform: scale(0.97);
+    }
+
+    /* Staggered entrance animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-enter {
+      animation: fadeInUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      opacity: 0;
+    }
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.12s; }
+    .delay-3 { animation-delay: 0.20s; }
+    .delay-4 { animation-delay: 0.28s; }
+    .delay-5 { animation-delay: 0.36s; }
+    .delay-6 { animation-delay: 0.44s; }
+
+    /* Ambient lock pulse */
+    @keyframes subtlePulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.04);
+      }
+    }
+    .badge-pulse {
+      animation: subtlePulse 3.5s ease-in-out infinite;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 2.5px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      animation: spin 0.65s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .animate-enter, .badge-pulse, .tap-scale {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[#F8F9FA] text-neutral-800 flex flex-col justify-between antialiased selection:bg-brand/20">
+<!-- Main Container Mobile Form Factor -->
+<main class="w-full max-w-md mx-auto min-h-screen flex flex-col justify-between px-6 pt-10 pb-8 relative">
+<!-- Top Context & Header -->
+<div class="w-full flex flex-col items-center text-center">
+<!-- Center-aligned Status Pill: Turno Cerrado -->
+<div class="animate-enter delay-1">
+<div class="badge-pulse inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-200/70 text-brand shadow-sm cursor-default select-none hover:border-orange-300 transition-colors">
+<svg class="w-4 h-4 text-brand animate-bounce-short" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewBox="0 0 24 24">
+<rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+</svg>
+<span class="text-xs font-bold tracking-wide uppercase">Turno Cerrado</span>
+</div>
+</div>
+<!-- App Branding / Greeting -->
+<div class="mt-5 space-y-1.5 animate-enter delay-2">
+<h1 class="text-2xl font-extrabold text-neutral-900 tracking-tight">Acceso al Sistema</h1>
+<p class="text-sm font-medium text-neutral-500">Selecciona el modo de inicio de sesión</p>
+</div>
+<!-- Access Mode Selector (Dual Card Options) -->
+<div class="w-full mt-7 grid grid-cols-1 gap-3.5 animate-enter delay-3" id="modeSelector">
+<!-- Option A: Abrir Nuevo Turno (Primary / Selected by default) -->
+<div class="tap-scale cursor-pointer text-left p-4 rounded-2xl bg-brand-surface border-2 border-brand shadow-sm shadow-orange-500/5 relative overflow-hidden transition-all duration-200 hover:shadow-md" id="optionTurno" onclick="selectMode('turno')">
+<div class="absolute top-3.5 right-3.5 w-5 h-5 rounded-full bg-brand flex items-center justify-center text-white transition-transform duration-200 scale-100 shadow-sm" id="badgeTurno">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewBox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<div class="flex items-start gap-3.5 pr-6">
+<div class="w-11 h-11 rounded-xl bg-orange-100/80 text-brand flex items-center justify-center shrink-0 transition-colors duration-200" id="iconBoxTurno">
+<!-- Storefront / Cash Register Icon -->
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M3 3h18l-1.5 6H4.5L3 3z"></path>
+<rect height="12" rx="2" width="16" x="4" y="9"></rect>
+<circle cx="8" cy="14" r="1"></circle>
+<circle cx="12" cy="14" r="1"></circle>
+<circle cx="16" cy="14" r="1"></circle>
+<path d="M7 18h10"></path>
+</svg>
+</div>
+<div>
+<h2 class="text-base font-bold text-neutral-900 transition-colors" id="titleTurno">Abrir Nuevo Turno</h2>
+<p class="text-xs font-normal text-neutral-500 leading-snug mt-0.5">Permite registrar ventas de mostrador y liquidar repartidores</p>
+</div>
+</div>
+</div>
+<!-- Option B: Modo Solo Consulta (Secondary / Unselected) -->
+<div class="tap-scale cursor-pointer text-left p-4 rounded-2xl bg-white border border-neutral-200/80 hover:border-neutral-300 shadow-sm relative overflow-hidden transition-all duration-200" id="optionConsulta" onclick="selectMode('consulta')">
+<div class="hidden absolute top-3.5 right-3.5 w-5 h-5 rounded-full bg-brand items-center justify-center text-white transition-transform duration-200 scale-0 shadow-sm" id="badgeConsulta">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" viewBox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<div class="flex items-start gap-3.5 pr-6">
+<div class="w-11 h-11 rounded-xl bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0 transition-colors duration-200" id="iconBoxConsulta">
+<!-- Insights / Eye Outline Icon -->
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</div>
+<div>
+<h2 class="text-base font-bold text-neutral-900 transition-colors" id="titleConsulta">Modo Solo Consulta</h2>
+<p class="text-xs font-normal text-neutral-500 leading-snug mt-0.5">Solo lectura para ver gráficas, reportes y métricas históricas</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Authentication Form Section -->
+<div class="w-full mt-7 animate-enter delay-4">
+<label class="block text-left text-xs font-bold text-neutral-600 uppercase tracking-wider mb-2 pl-1" for="passwordPin">
+          Credenciales de Acceso
+        </label>
+<!-- Input & Password Row -->
+<div class="w-full space-y-3">
+<!-- Username Field -->
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-brand transition-colors duration-200">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+<circle cx="12" cy="7" r="4"></circle>
+</svg>
+</div>
+<input class="w-full pl-11 pr-4 py-3.5 rounded-full bg-white border border-neutral-300 text-neutral-900 placeholder:text-neutral-400 text-sm font-semibold tracking-wide focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/15 transition-all duration-200 shadow-sm" id="username" placeholder="Usuario o Nombre de Operador" type="text">
+</div>
+<!-- Password / PIN Field -->
+<div class="relative w-full group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-400 group-focus-within:text-brand transition-colors duration-200">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+</svg>
+</div>
+<input class="w-full pl-11 pr-11 py-3.5 rounded-full bg-white border border-neutral-300 text-neutral-900 placeholder:text-neutral-400 text-sm font-semibold tracking-wider focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/15 transition-all duration-200 shadow-sm" id="passwordPin" placeholder="Contraseña o PIN" type="password" value="••••">
+<button aria-label="Mostrar u ocultar contraseña" class="absolute inset-y-0 right-0 pr-4 flex items-center text-neutral-400 hover:text-brand transition-colors duration-150 focus:outline-none tap-scale" onclick="togglePasswordVisibility()" title="Mostrar/ocultar contraseña" type="button">
+<svg class="w-5 h-5 transition-transform duration-150 active:scale-90" fill="none" id="eyeIcon" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+</button>
+</div>
+</div>
+</div>
+<!-- Primary Call to Action -->
+<div class="w-full mt-6 animate-enter delay-5">
+<button class="tap-scale w-full py-4 rounded-full bg-brand hover:bg-brand-dark text-white font-bold text-base shadow-lg shadow-brand/30 flex items-center justify-center gap-2 focus:outline-none transition-all duration-200" id="loginBtn" onclick="submitLogin()" type="button">
+<span class="flex items-center gap-2" id="loginBtnText">
+<span>Iniciar Sesión</span>
+<svg class="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24">
+<line x1="5" x2="19" y1="12" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</span>
+<div class="hidden items-center gap-2.5" id="loginSpinner">
+<div class="spinner"></div>
+<span class="text-sm font-semibold">Verificando credenciales...</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Footer Actions & Security Tag -->
+<div class="w-full pt-8 flex flex-col items-center text-center space-y-3 animate-enter delay-6">
+<button class="text-xs font-semibold text-neutral-600 hover:text-brand hover:underline underline-offset-4 transition-colors focus:outline-none py-1" onclick="openResetModal()" type="button">
+        Cambiar o restablecer contraseña
+      </button>
+<div class="inline-flex items-center gap-1.5 text-[11px] font-medium text-neutral-400 tracking-wide">
+<svg class="w-3.5 h-3.5 text-neutral-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+</svg>
+<span>Sistema de Control Seguro • v1.0</span>
+</div>
+</div>
+</main>
+<!-- Notification Toast feedback -->
+<div class="fixed top-5 inset-x-0 mx-auto max-w-xs px-4 py-3 rounded-full bg-neutral-900 text-white text-xs font-semibold text-center shadow-xl opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 z-50 flex items-center justify-center gap-2" id="toast">
+<div id="toastIcon">
+<svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+</div>
+<span id="toastMsg">Sesión iniciada con éxito</span>
+</div>
+<!-- Password Reset Modal Simulator -->
+<div class="fixed inset-0 bg-neutral-900/50 backdrop-blur-sm z-50 flex items-center justify-center px-4 opacity-0 pointer-events-none transition-opacity duration-200" id="resetModal">
+<div class="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl scale-95 transition-transform duration-200 transform" id="modalCard">
+<div class="w-12 h-12 rounded-2xl bg-orange-100 text-brand flex items-center justify-center mb-4">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24">
+<rect height="11" rx="2" ry="2" width="18" x="3" y="11"></rect>
+<path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+</svg>
+</div>
+<h3 class="text-lg font-bold text-neutral-900">Restablecer Contraseña</h3>
+<p class="text-xs font-medium text-neutral-500 mt-1">Ingresa el usuario o correo registrado del administrador para recibir el token de recuperación.</p>
+<div class="mt-4">
+<input class="w-full px-4 py-3 rounded-xl border border-neutral-300 text-sm focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20" id="resetInput" placeholder="usuario@comercio.com" type="text">
+</div>
+<div class="mt-5 flex gap-2.5">
+<button class="flex-1 py-2.5 rounded-full border border-neutral-300 text-neutral-700 font-semibold text-xs hover:bg-neutral-100 transition-colors" onclick="closeResetModal()" type="button">Cancelar</button>
+<button class="flex-1 py-2.5 rounded-full bg-brand text-white font-bold text-xs hover:bg-brand-dark transition-colors shadow-md shadow-brand/20" onclick="sendResetRequest()" type="button">Enviar Enlace</button>
+</div>
+</div>
+</div>
+<script>
+    let currentMode = 'turno';
+    let isSubmitting = false;
+
+    function selectMode(mode) {
+      if (currentMode === mode) return;
+      currentMode = mode;
+
+      const optTurno = document.getElementById('optionTurno');
+      const optConsulta = document.getElementById('optionConsulta');
+      const badgeTurno = document.getElementById('badgeTurno');
+      const badgeConsulta = document.getElementById('badgeConsulta');
+      const iconBoxTurno = document.getElementById('iconBoxTurno');
+      const iconBoxConsulta = document.getElementById('iconBoxConsulta');
+
+      if (mode === 'turno') {
+        // Active Turno
+        optTurno.className = "tap-scale cursor-pointer text-left p-4 rounded-2xl bg-brand-surface border-2 border-brand shadow-sm shadow-orange-500/5 relative overflow-hidden transition-all duration-200 hover:shadow-md";
+        badgeTurno.classList.remove('hidden');
+        badgeTurno.classList.add('flex');
+        badgeTurno.classList.remove('scale-0');
+        badgeTurno.classList.add('scale-100');
+        iconBoxTurno.className = "w-11 h-11 rounded-xl bg-orange-100/80 text-brand flex items-center justify-center shrink-0 transition-colors duration-200";
+
+        // Inactive Consulta
+        optConsulta.className = "tap-scale cursor-pointer text-left p-4 rounded-2xl bg-white border border-neutral-200/80 hover:border-neutral-300 shadow-sm relative overflow-hidden transition-all duration-200";
+        badgeConsulta.classList.remove('scale-100');
+        badgeConsulta.classList.add('scale-0');
+        badgeConsulta.classList.remove('flex');
+        badgeConsulta.classList.add('hidden');
+        iconBoxConsulta.className = "w-11 h-11 rounded-xl bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0 transition-colors duration-200";
+      } else {
+        // Active Consulta
+        optConsulta.className = "tap-scale cursor-pointer text-left p-4 rounded-2xl bg-brand-surface border-2 border-brand shadow-sm shadow-orange-500/5 relative overflow-hidden transition-all duration-200 hover:shadow-md";
+        badgeConsulta.classList.remove('hidden');
+        badgeConsulta.classList.add('flex');
+        badgeConsulta.classList.remove('scale-0');
+        badgeConsulta.classList.add('scale-100');
+        iconBoxConsulta.className = "w-11 h-11 rounded-xl bg-orange-100/80 text-brand flex items-center justify-center shrink-0 transition-colors duration-200";
+
+        // Inactive Turno
+        optTurno.className = "tap-scale cursor-pointer text-left p-4 rounded-2xl bg-white border border-neutral-200/80 hover:border-neutral-300 shadow-sm relative overflow-hidden transition-all duration-200";
+        badgeTurno.classList.remove('scale-100');
+        badgeTurno.classList.add('scale-0');
+        badgeTurno.classList.remove('flex');
+        badgeTurno.classList.add('hidden');
+        iconBoxTurno.className = "w-11 h-11 rounded-xl bg-neutral-100 text-neutral-600 flex items-center justify-center shrink-0 transition-colors duration-200";
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('passwordPin');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.innerHTML = `
+          <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+          <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+          <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+          <line x1="2" y1="2" x2="22" y2="22"></line>
+        `;
+      } else {
+        input.type = 'password';
+        eyeIcon.innerHTML = `
+          <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      }
+    }
+
+    let toastTimeout;
+    function showToast(msg, isSuccess = true) {
+      clearTimeout(toastTimeout);
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastMsg.textContent = msg;
+      if (isSuccess) {
+        toastIcon.innerHTML = `<svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+      } else {
+        toastIcon.innerHTML = `<svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+      }
+
+      toast.classList.remove('opacity-0', '-translate-y-2', 'pointer-events-none');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', '-translate-y-2', 'pointer-events-none');
+      }, 2600);
+    }
+
+    function submitLogin() {
+      if (isSubmitting) return;
+      isSubmitting = true;
+
+      const loginBtn = document.getElementById('loginBtn');
+      const btnText = document.getElementById('loginBtnText');
+      const spinner = document.getElementById('loginSpinner');
+
+      // State: Loading
+      btnText.classList.add('hidden');
+      spinner.classList.remove('hidden');
+      spinner.classList.add('flex');
+      loginBtn.classList.add('opacity-90', 'cursor-wait');
+
+      setTimeout(() => {
+        // Reset button
+        btnText.classList.remove('hidden');
+        spinner.classList.remove('flex');
+        spinner.classList.add('hidden');
+        loginBtn.classList.remove('opacity-90', 'cursor-wait');
+        isSubmitting = false;
+
+        const successText = currentMode === 'turno' 
+          ? '¡Turno abierto exitosamente!' 
+          : 'Ingresando a Modo Consulta...';
+        showToast(successText, true);
+      }, 800);
+    }
+
+    // Modal Handlers
+    function openResetModal() {
+      const modal = document.getElementById('resetModal');
+      const card = document.getElementById('modalCard');
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100');
+      card.classList.remove('scale-95');
+      card.classList.add('scale-100');
+    }
+
+    function closeResetModal() {
+      const modal = document.getElementById('resetModal');
+      const card = document.getElementById('modalCard');
+      card.classList.remove('scale-100');
+      card.classList.add('scale-95');
+      modal.classList.remove('opacity-100');
+      modal.classList.add('opacity-0', 'pointer-events-none');
+    }
+
+    function sendResetRequest() {
+      closeResetModal();
+      showToast("Instrucciones enviadas al administrador", true);
+    }
+
+    // Close modal on Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeResetModal();
+      if (e.key === 'Enter' && !document.getElementById('resetModal').classList.contains('pointer-events-none')) {
+        sendResetRequest();
+      }
+    });
+  </script>
+</body></html>

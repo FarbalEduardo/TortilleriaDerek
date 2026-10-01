@@ -1,0 +1,195 @@
+<!DOCTYPE html><html lang="es" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>Producción - Tortillería App</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS v3 with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            primary: '#FF6B00',
+            'primary-dark': '#E65100',
+            'surface-card': '#F1EFEF',
+            'badge-green': '#1E874B',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-styling">
+    /* Remove tap highlight & mobile aesthetic fine-tuning */
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #FFFFFF;
+      font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    }
+  </style>
+</head>
+<body class="bg-white text-stone-900 font-sans antialiased min-h-screen flex justify-center selection:bg-orange-100 selection:text-primary">
+<!-- Mobile Viewport Container -->
+<div class="w-full max-w-[420px] bg-white min-h-screen flex flex-col justify-between pb-24 relative shadow-2xl">
+<!-- BEGIN: MainContent -->
+<main class="px-4.5 pt-4 space-y-4 px-4">
+<!-- BEGIN: HeaderSummaryCard -->
+<!-- Gradient Hero card with key metrics and stock availability -->
+<section class="relative overflow-hidden rounded-[26px] bg-gradient-to-br from-[#FF5C00] via-[#FF6E00] to-[#F15000] p-5 text-white shadow-xl shadow-orange-500/25" data-purpose="production-summary-card">
+<div class="flex items-center justify-between gap-2">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-semibold text-white">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6.75 3v2.25M17.25 3v2.253M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="">Hoy, Lun 7 Sept</span>
+</div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-bold text-white tracking-tight">
+<span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+<span class="">En Producción Activa</span>
+</div>
+</div>
+<div class="mt-4 text-center">
+<span class="text-[11px] font-bold tracking-wider text-white/80 uppercase">Tortilla Disponible en Tienda</span>
+<h1 class="text-[44px] leading-tight font-extrabold tracking-tight text-white drop-shadow-sm mt-0.5">
+14.5 kg
+</h1>
+</div>
+<div class="mt-3 bg-black/15 rounded-full p-1">
+<div class="flex justify-between items-center px-2 py-0.5 text-[10.5px] font-bold text-white/90">
+<span class="">Progreso de Venta</span>
+<span class="">90.5% Vendido</span>
+</div>
+<div class="w-full bg-white/25 rounded-full h-2 overflow-hidden">
+<div class="bg-white h-2 rounded-full" style="width: 90.5%"></div>
+</div>
+</div>
+<div class="mt-3.5 grid grid-cols-2 gap-2 text-stone-900 text-center">
+<div class="bg-white/95 backdrop-blur-md rounded-xl py-2 px-3 shadow-sm">
+<span class="text-[10px] uppercase font-bold text-stone-500 block">Producido Neto</span>
+<span class="text-[15px] font-extrabold text-stone-900">154.0 kg</span>
+</div>
+<div class="bg-white/95 backdrop-blur-md rounded-xl py-2 px-3 shadow-sm">
+<span class="text-[10px] uppercase font-bold text-stone-500 block">Total Vendido</span>
+<span class="text-[15px] font-extrabold text-[#FF6B00]">139.5 kg</span>
+</div>
+</div>
+</section>
+<!-- END: HeaderSummaryCard -->
+<!-- BEGIN: ProductionPrepSection -->
+<!-- Flour dough preparation stepper and calculation preview -->
+<section class="pt-1" data-purpose="flour-preparation-control">
+<div class="flex items-center justify-between mb-2.5 px-0.5">
+<h2 class="text-[16px] font-bold text-stone-900 tracking-tight">
+Registro de Nueva Tanda
+</h2>
+<span class="bg-orange-50 text-[#FF6B00] border border-[#FF6B00]/30 text-[10.5px] font-bold px-2.5 py-0.5 rounded-full shadow-sm">
+Rendimiento: 38.5 kg / bulto
+</span>
+</div>
+<div class="bg-white rounded-[22px] p-4 text-center border border-stone-200/80 shadow-sm">
+<div class="flex items-center justify-center gap-1.5 text-stone-900 mb-1">
+<svg class="w-4 h-4 text-[#FF6B00]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5h-2v-2h2v2zm0-4h-2V7h2v5.5z" opacity="0.2"></path><path d="M19 10.5V6a2 2 0 00-2-2H7a2 2 0 00-2 2v4.5C3.79 11.4 3 12.86 3 14.5 3 17.54 5.46 20 8.5 20h7c3.04 0 5.5-2.46 5.5-5.5 0-1.64-.79-3.1-2-4zM7 6h10v3H7V6z"></path></svg>
+<h3 class="text-[15px] font-bold text-stone-900">Bultos de Harina (20 kg c/u)</h3>
+</div>
+<p class="text-[12px] text-stone-500 font-medium">
+Rinde ~38.5 kg de tortilla cocida por bulto
+</p>
+<div class="my-3 inline-flex items-center justify-between bg-[#F3EFEF] rounded-full p-1.5 shadow-inner min-w-[190px]">
+<button aria-label="Disminuir bultos" class="w-10 h-10 rounded-full bg-white text-stone-700 flex items-center justify-center active:scale-95 transition-all text-xl font-bold shadow-sm hover:bg-stone-100">
+<svg class="w-4 h-4 text-stone-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+<path d="M20 12H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<div class="flex items-baseline gap-1 px-4">
+<span class="text-2xl font-black text-stone-900">4</span>
+<span class="text-xs font-bold text-stone-500">bultos</span>
+</div>
+<button aria-label="Aumentar bultos" class="w-10 h-10 rounded-full bg-[#FF6B00] text-white flex items-center justify-center active:scale-95 transition-all shadow-md shadow-orange-500/30 hover:bg-[#F26400]">
+<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+<path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+</div>
+<div class="pt-2.5 border-t border-stone-100 flex items-center justify-center gap-1.5 text-[11px] font-medium text-stone-600 tracking-tight">
+<span class="">Equivale a <strong class="text-stone-800 font-bold">160 kg</strong> masa cruda</span>
+<svg class="w-3.5 h-3.5 text-[#FF6B00] shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class=""><strong class="text-[#FF6B00] font-bold">154.0 kg</strong> tortilla</span>
+</div>
+</div>
+</section>
+<!-- END: ProductionPrepSection -->
+<!-- BEGIN: ModularStockMermaSection -->
+<!-- Raw dough reserve card & Waste tracking card -->
+<section class="grid grid-cols-2 gap-3" data-purpose="secondary-metrics-cards">
+
+
+</section>
+<!-- END: ModularStockMermaSection -->
+<!-- BEGIN: ActionButtonsGroup -->
+<section class="space-y-2 pt-1" data-purpose="primary-actions">
+<button class="w-full py-3.5 px-6 rounded-full bg-[#FF6B00] hover:bg-[#F26400] text-white font-bold text-[15px] flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 active:scale-[0.99] transition-all" type="button">
+<span class="">Registrar Tanda de Producción</span>
+<svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>
+</button>
+<button class="w-full py-2.5 px-6 rounded-full border border-stone-300 text-stone-700 font-semibold text-[13.5px] hover:bg-stone-100 active:scale-[0.99] transition-all text-center" type="button">
+Ver Historial produccion</button>
+</section>
+<!-- END: ActionButtonsGroup -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: BottomNavigationBar -->
+<!-- Material 3 style bottom nav with active pill indicator -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-[420px] mx-auto bg-white/95 backdrop-blur-lg border-t border-stone-200/80 px-2 h-[70px] grid grid-cols-4 items-center z-50" data-purpose="material3-bottom-nav">
+  <a href="#venta" class="flex flex-col items-center justify-center py-1 group transition-colors">
+    <div class="px-3 py-1 rounded-full flex items-center justify-center text-stone-500 group-hover:text-stone-700 transition-transform group-active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.651V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009 9.35c.66 0 1.28-.214 1.785-.58a3.003 3.003 0 004.43 0c.505.366 1.125.58 1.785.58 1.05 0 1.98-.54 2.52-1.365m-15.52.78L4.5 3h15l1.02 6.35" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <span class="text-xs font-medium text-stone-500 group-hover:text-stone-700 whitespace-nowrap">Venta</span>
+  </a>
+
+  <a href="#produccion" class="flex flex-col items-center justify-center py-1 group transition-transform active:scale-95">
+    <div class="bg-[#FFE6D5] px-4 py-1 rounded-full flex items-center justify-center shadow-sm">
+      <svg class="w-5 h-5 text-[#FF6B00]" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-11-3h8v3H8V5zm8 14H8v-4h8v4zm4-4h-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4z"></path>
+        <circle cx="18" cy="11.5" r="1"></circle>
+      </svg>
+    </div>
+    <span class="text-xs font-bold text-[#FF6B00] whitespace-nowrap mt-0.5">Producción</span>
+  </a>
+
+  <a href="#metricas" class="flex flex-col items-center justify-center py-1 group transition-colors">
+    <div class="px-3 py-1 rounded-full flex items-center justify-center text-stone-500 group-hover:text-stone-700 transition-transform group-active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <span class="text-xs font-medium text-stone-500 group-hover:text-stone-700 whitespace-nowrap">Métricas</span>
+  </a>
+
+  <a href="#ajustes" class="flex flex-col items-center justify-center py-1 group transition-colors">
+    <div class="px-3 py-1 rounded-full flex items-center justify-center text-stone-500 group-hover:text-stone-700 transition-transform group-active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+        <path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+    </div>
+    <span class="text-xs font-medium text-stone-500 group-hover:text-stone-700 whitespace-nowrap">Ajustes</span>
+  </a>
+</nav>
+<!-- END: BottomNavigationBar -->
+</div>
+
+
+
+
+</body></html>

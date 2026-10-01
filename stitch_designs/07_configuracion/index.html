@@ -1,0 +1,409 @@
+<!DOCTYPE html><html lang="es" style=""><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configuración del Sistema - Tortillería</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              DEFAULT: '#FF6B00',
+              50: '#FFF6EE',
+              100: '#FFEAD4',
+              200: '#FFD4AA',
+              500: '#FF6B00',
+              600: '#E65A00',
+              700: '#CC4E00',
+            },
+            charcoal: {
+              900: '#191C1E',
+              800: '#2C3033',
+              700: '#43474B',
+              500: '#72777C',
+              400: '#8C9197',
+              200: '#E1E2E5',
+              100: '#F0F1F4',
+              50: '#F8F9FB',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #FFFFFF;
+      color: #191C1E;
+    }
+    .tap-effect:active {
+      transform: scale(0.97);
+      transition: transform 0.1s ease;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-white text-charcoal-900 flex justify-center min-h-screen">
+  <!-- Mobile Screen Container (Android Frame ~390-412px width) -->
+  <div class="w-full max-w-[420px] bg-white min-h-screen flex flex-col relative pb-28 shadow-sm">
+    
+    <!-- Top Header Area (Edge-to-Edge with Status Bar Padding, NO toolbar) -->
+    <div class="px-5 pt-8 pb-4">
+      <div class="flex items-center justify-between">
+        <div>
+          
+          <h1 class="text-2xl font-extrabold tracking-tight text-charcoal-900">
+            Configuración del Sistema
+          </h1>
+          <p class="text-xs text-charcoal-500 mt-0.5 font-medium">
+            Parámetros operativos y catálogo activo
+          </p>
+        </div>
+        <!-- Right-aligned profile avatar / security badge -->
+        
+      </div>
+    </div>
+
+    <!-- Main Content List -->
+    <div class="px-5 space-y-4 flex-1">
+
+      <!-- SECTION 1: Precios y Presentaciones (High Priority) -->
+      <div class="bg-white rounded-[22px] border border-charcoal-200/70 p-4 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+        <!-- Card Header -->
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-charcoal-100">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-orange-50 flex items-center justify-center text-brand-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-charcoal-900 leading-tight">Precios y Pesos de Productos</h2>
+              <p class="text-[11px] text-charcoal-500 font-medium">Mostrador y venta rápida</p>
+            </div>
+          </div>
+          <span class="text-[11px] font-bold text-brand-600 bg-brand-50 px-2 py-0.5 rounded-md">
+            3 activos
+          </span>
+        </div>
+
+        <!-- 3 Product Rows -->
+        <div class="space-y-2.5">
+          <!-- Item 1: Kilo Completo -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-charcoal-50/70 border border-charcoal-100/80 hover:bg-orange-50/40 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-white shadow-xs border border-charcoal-200/60 flex items-center justify-center font-bold text-xs text-charcoal-800">
+                1k
+              </div>
+              <div>
+                <p class="text-xs font-bold text-charcoal-900 leading-tight">Kilo Completo</p>
+                <p class="text-[11px] text-charcoal-500 font-medium">1,000 g peso estándar</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-extrabold text-charcoal-900 bg-white px-2.5 py-1 rounded-lg border border-charcoal-200/70 shadow-xs">
+                $24.00 <span class="text-[10px] text-charcoal-500 font-semibold">MXN</span>
+              </span>
+              <button class="tap-effect p-1.5 rounded-lg text-charcoal-500 hover:text-brand-600 hover:bg-brand-50 transition-colors" title="Editar precio">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 2: Paquete 800g -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-charcoal-50/70 border border-charcoal-100/80 hover:bg-orange-50/40 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-white shadow-xs border border-charcoal-200/60 flex items-center justify-center font-bold text-xs text-charcoal-800">
+                Pq
+              </div>
+              <div>
+                <p class="text-xs font-bold text-charcoal-900 leading-tight">Paquete Mostrador</p>
+                <p class="text-[11px] text-charcoal-500 font-medium">1.33 kg aprox. (especial)</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-extrabold text-charcoal-900 bg-white px-2.5 py-1 rounded-lg border border-charcoal-200/70 shadow-xs">
+                $32.00 <span class="text-[10px] text-charcoal-500 font-semibold">MXN</span>
+              </span>
+              <button class="tap-effect p-1.5 rounded-lg text-charcoal-500 hover:text-brand-600 hover:bg-brand-50 transition-colors" title="Editar precio">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Item 3: Medio Paquete 400g / 650g -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-charcoal-50/70 border border-charcoal-100/80 hover:bg-orange-50/40 transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-lg bg-white shadow-xs border border-charcoal-200/60 flex items-center justify-center font-bold text-xs text-charcoal-800">
+                ½
+              </div>
+              <div>
+                <p class="text-xs font-bold text-charcoal-900 leading-tight">Medio Paquete</p>
+                <p class="text-[11px] text-charcoal-500 font-medium">650 g peso aproximado</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs font-extrabold text-charcoal-900 bg-white px-2.5 py-1 rounded-lg border border-charcoal-200/70 shadow-xs">
+                $16.00 <span class="text-[10px] text-charcoal-500 font-semibold">MXN</span>
+              </span>
+              <button class="tap-effect p-1.5 rounded-lg text-charcoal-500 hover:text-brand-600 hover:bg-brand-50 transition-colors" title="Editar precio">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 2: Producción y Rendimiento (Core Formula) -->
+      <div class="bg-white rounded-[22px] border border-charcoal-200/70 p-4 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-charcoal-100">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-orange-50 flex items-center justify-center text-brand-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-charcoal-900 leading-tight">Estándares de Producción</h2>
+              <p class="text-[11px] text-charcoal-500 font-medium">Bulto estándar de Harina (20 kg)</p>
+            </div>
+          </div>
+          <button class="tap-effect p-1.5 rounded-lg text-charcoal-500 hover:text-brand-600 hover:bg-brand-50 transition-colors">
+            
+          </button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- Col 1: Rendimiento -->
+          <div class="p-3 rounded-xl bg-orange-50/50 border border-brand-100/70">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-brand-700">Rendimiento Neto</span>
+            <div class="text-base font-extrabold text-charcoal-900 mt-0.5">38.5 kg</div>
+            <p class="text-[10px] text-charcoal-500 font-medium mt-0.5">Tortilla cocida / bulto</p>
+          </div>
+
+          <!-- Col 2: Merma Estándar -->
+          <div class="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200/60">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Merma Tolerada</span>
+              <span class="text-[9px] font-extrabold text-emerald-700 bg-white px-1.5 py-0.2 rounded">3.8%</span>
+            </div>
+            <div class="text-base font-extrabold text-charcoal-900 mt-0.5">1.5 kg</div>
+            <p class="text-[10px] text-charcoal-500 font-medium mt-0.5">Máximo permitido / bulto</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3: Gestión de Repartidores (Personnel) -->
+      <div class="bg-white rounded-[22px] border border-charcoal-200/70 p-4 shadow-[0_2px_10px_rgba(0,0,0,0.03)]">
+        <div class="flex items-center justify-between pb-3 mb-3 border-b border-charcoal-100">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-xl bg-orange-50 flex items-center justify-center text-brand-600">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-charcoal-900 leading-tight">Gestión de Repartidores</h2>
+              <p class="text-[11px] text-charcoal-500 font-medium">Motos y rutas de mayoreo</p>
+            </div>
+          </div>
+          <!-- Add Button Pill -->
+          <button class="tap-effect flex items-center gap-1 bg-brand-50 text-brand-700 hover:bg-brand-100/70 px-2.5 py-1 rounded-full text-xs font-bold transition-colors">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Agregar
+          </button>
+        </div>
+
+        <!-- Repartidores List -->
+        <div class="space-y-2">
+          <!-- Moto 1 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-charcoal-50/60 border border-charcoal-100/70">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-orange-100 text-brand-700 flex items-center justify-center text-[11px] font-bold">
+                #01
+              </div>
+              <div>
+                <p class="text-xs font-bold text-charcoal-900">Carlos Ruiz</p>
+                <p class="text-[10px] text-charcoal-500 font-medium">Moto Italika 125 • Ruta San Juan</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button class="tap-effect p-1.5 text-charcoal-400 hover:text-brand-600 rounded-md">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+              <button class="tap-effect p-1.5 text-charcoal-400 hover:text-red-500 rounded-md">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Moto 2 -->
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-charcoal-50/60 border border-charcoal-100/70">
+            <div class="flex items-center gap-2.5">
+              <div class="w-7 h-7 rounded-lg bg-orange-100 text-brand-700 flex items-center justify-center text-[11px] font-bold">
+                #02
+              </div>
+              <div>
+                <p class="text-xs font-bold text-charcoal-900">Miguel Gómez</p>
+                <p class="text-[10px] text-charcoal-500 font-medium">Moto Honda 150 • Ruta Taquerías</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-1">
+              <button class="tap-effect p-1.5 text-charcoal-400 hover:text-brand-600 rounded-md">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                </svg>
+              </button>
+              <button class="tap-effect p-1.5 text-charcoal-400 hover:text-red-500 rounded-md">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4: Seguridad y Cuenta (Footer Settings) -->
+      <div class="space-y-2">
+        <span class="text-[11px] font-bold uppercase tracking-wider text-charcoal-500 px-1">
+          Seguridad y Sistema
+        </span>
+
+        <div class="bg-white rounded-[20px] border border-charcoal-200/70 overflow-hidden divide-y divide-charcoal-100 shadow-xs">
+          <!-- Row 1: Cambiar Contraseña o PIN -->
+          <div class="tap-effect flex items-center justify-between p-3 hover:bg-charcoal-50 cursor-pointer transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-charcoal-100 text-charcoal-700 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                </svg>
+              </div>
+              <span class="text-xs font-bold text-charcoal-900">Cambiar Contraseña o PIN</span>
+            </div>
+            <svg class="w-4 h-4 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+
+          <!-- Row 2: Exportar Respaldo de Datos -->
+          <div class="tap-effect flex items-center justify-between p-3 hover:bg-charcoal-50 cursor-pointer transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-charcoal-100 text-charcoal-700 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-charcoal-900 block leading-tight">Exportar Respaldo de Datos</span>
+                <span class="text-[10px] text-charcoal-500 font-medium">Cierre mensual en Excel / CSV</span>
+              </div>
+            </div>
+            <svg class="w-4 h-4 text-charcoal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+
+          <!-- Row 3: Acerca de la Aplicación -->
+          <div class="tap-effect flex items-center justify-between p-3 hover:bg-charcoal-50 cursor-pointer transition-colors">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-charcoal-100 text-charcoal-700 flex items-center justify-center">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+              </div>
+              <div>
+                <span class="text-xs font-bold text-charcoal-900 block leading-tight">Acerca de la Aplicación</span>
+                <span class="text-[10px] text-charcoal-500 font-medium">v1.0 • Licencia Comercial Activa</span>
+              </div>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+              Actualizado
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Fixed Bottom Navigation Bar (Material Design 3 - 4 items) -->
+    <!-- Destination 4 (Ajustes) is the SELECTED item with orange pill indicator -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-[420px] mx-auto h-[70px] bg-white border-t border-charcoal-200/80 px-2 z-50 shadow-[0_-4px_16px_rgba(0,0,0,0.03)] grid grid-cols-4 items-center">
+  <!-- 1. Venta -->
+  <a href="#" class="flex flex-col items-center justify-center gap-1 text-charcoal-500 hover:text-charcoal-800 transition-colors tap-effect py-1">
+    <div class="w-12 h-7 rounded-full flex items-center justify-center hover:bg-charcoal-100/50 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+    </div>
+    <span class="text-[11px] font-medium text-charcoal-500 whitespace-nowrap leading-none">Venta</span>
+  </a>
+
+  <!-- 2. Producción -->
+  <a href="#" class="flex flex-col items-center justify-center gap-1 text-charcoal-500 hover:text-charcoal-800 transition-colors tap-effect py-1">
+    <div class="w-12 h-7 rounded-full flex items-center justify-center hover:bg-charcoal-100/50 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+      </svg>
+    </div>
+    <span class="text-[11px] font-medium text-charcoal-500 whitespace-nowrap leading-none">Producción</span>
+  </a>
+
+  <!-- 3. Métricas -->
+  <a href="#" class="flex flex-col items-center justify-center gap-1 text-charcoal-500 hover:text-charcoal-800 transition-colors tap-effect py-1">
+    <div class="w-12 h-7 rounded-full flex items-center justify-center hover:bg-charcoal-100/50 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+      </svg>
+    </div>
+    <span class="text-[11px] font-medium text-charcoal-500 whitespace-nowrap leading-none">Métricas</span>
+  </a>
+
+  <!-- 4. Ajustes (ACTIVE) -->
+  <a href="#" class="flex flex-col items-center justify-center gap-1 tap-effect py-1 text-brand-600">
+    <div class="w-12 h-7 rounded-full bg-orange-100 text-brand-600 flex items-center justify-center shadow-xs transition-colors">
+      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+      </svg>
+    </div>
+    <span class="text-[11px] font-bold text-brand-600 whitespace-nowrap leading-none">Ajustes</span>
+  </a>
+</nav>
+
+  </div>
+
+
+
+
+
+
+
+
+</body></html>
