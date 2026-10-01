@@ -9,6 +9,7 @@ import com.example.tortilleriaderek.data.local.entity.ConfiguracionProduccionEnt
 import com.example.tortilleriaderek.data.local.entity.RepartidorEntity
 import com.example.tortilleriaderek.data.local.entity.TurnoEntity
 import com.example.tortilleriaderek.data.local.entity.UsuarioEntity
+import com.example.tortilleriaderek.data.security.CryptoManager
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -252,14 +253,33 @@ class ConfiguracionViewModelTest {
     }
 
     @Test
-    fun `eliminarUsuario impide borrar al unico ADMIN`() = runTest {
-        val adminUser = UsuarioEntity("u1", "admin1", "hash", "salt", "ADMIN")
-        coEvery { usuarioDao.getUsuarioById("u1") } returns adminUser
+    fun `eliminarUsuario impide borrar la cuenta principal admin1`() = runTest {
+        val adminUser = UsuarioEntity("1", "admin1", "hash", "salt", "ADMIN")
+        coEvery { usuarioDao.getUsuarioById("1") } returns adminUser
+        coEvery { usuarioDao.countAdmins() } returns 2
+
+        var fueExitoso = true
+        var errorMensaje: String? = null
+        viewModel.eliminarUsuario("1") { ok, err ->
+            fueExitoso = ok
+            errorMensaje = err
+        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertFalse(fueExitoso)
+        assertTrue(errorMensaje?.contains("admin1") == true && errorMensaje?.contains("protegida") == true)
+        coVerify(exactly = 0) { usuarioDao.deleteUsuarioById("1") }
+    }
+
+    @Test
+    fun `eliminarUsuario de cuenta admin secundaria impide borrar si es el unico ADMIN`() = runTest {
+        val adminSecundario = UsuarioEntity("u2", "admin2", "hash", "salt", "ADMIN")
+        coEvery { usuarioDao.getUsuarioById("u2") } returns adminSecundario
         coEvery { usuarioDao.countAdmins() } returns 1
 
         var fueExitoso = true
         var errorMensaje: String? = null
-        viewModel.eliminarUsuario("u1") { ok, err ->
+        viewModel.eliminarUsuario("u2") { ok, err ->
             fueExitoso = ok
             errorMensaje = err
         }
@@ -267,7 +287,7 @@ class ConfiguracionViewModelTest {
 
         assertFalse(fueExitoso)
         assertTrue(errorMensaje?.contains("No se puede eliminar al único Administrador") == true)
-        coVerify(exactly = 0) { usuarioDao.deleteUsuarioById("u1") }
+        coVerify(exactly = 0) { usuarioDao.deleteUsuarioById("u2") }
     }
 
     @Test
@@ -283,6 +303,59 @@ class ConfiguracionViewModelTest {
 
         assertTrue(fueExitoso)
         coVerify(exactly = 1) { usuarioDao.deleteUsuarioById("u2") }
+    }
+
+    @Test
+    fun `editarUsuario en admin1 no permite renombrar la cuenta`() = runTest {
+        val adminUser = UsuarioEntity("1", "admin1", "hash", "salt", "ADMIN")
+        coEvery { usuarioDao.getUsuarioById("1") } returns adminUser
+
+        var fueExitoso = true
+        var errorMensaje: String? = null
+        viewModel.editarUsuario("1", "nuevoAdmin", "ADMIN", null) { ok, err ->
+            fueExitoso = ok
+            errorMensaje = err
+        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertFalse(fueExitoso)
+        assertTrue(errorMensaje?.contains("no puede ser renombrada") == true)
+        coVerify(exactly = 0) { usuarioDao.insertUsuario(match { it.username == "nuevoAdmin" }) }
+    }
+
+    @Test
+    fun `editarUsuario en admin1 no permite cambiar rol de ADMIN a EMPLEADO`() = runTest {
+        val adminUser = UsuarioEntity("1", "admin1", "hash", "salt", "ADMIN")
+        coEvery { usuarioDao.getUsuarioById("1") } returns adminUser
+
+        var fueExitoso = true
+        var errorMensaje: String? = null
+        viewModel.editarUsuario("1", "admin1", "EMPLEADO", null) { ok, err ->
+            fueExitoso = ok
+            errorMensaje = err
+        }
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertFalse(fueExitoso)
+        assertTrue(errorMensaje?.contains("Administrador") == true)
+        coVerify(exactly = 0) { usuarioDao.insertUsuario(match { it.rol == "EMPLEADO" }) }
+    }
+
+    @Test
+    fun `verificarCredencialesAdmin1 valida contrasena correcta con PBKDF2`() = runTest {
+        val salt = CryptoManager.generateSalt()
+        val hash = CryptoManager.hashPassword("admin123", salt)
+        val adminUser = UsuarioEntity("1", "admin1", hash, salt, "ADMIN")
+        coEvery { usuarioDao.getUsuarioByUsername("admin1") } returns adminUser
+
+        val esValido = viewModel.verificarCredencialesAdmin1("admin1", "admin123")
+        assertTrue(esValido)
+
+        val esInvalidoPass = viewModel.verificarCredencialesAdmin1("admin1", "wrongPass")
+        assertFalse(esInvalidoPass)
+
+        val esInvalidoUser = viewModel.verificarCredencialesAdmin1("otroUser", "admin123")
+        assertFalse(esInvalidoUser)
     }
 }
 

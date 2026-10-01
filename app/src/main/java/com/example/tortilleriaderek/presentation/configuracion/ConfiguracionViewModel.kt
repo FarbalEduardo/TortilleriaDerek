@@ -49,9 +49,26 @@ class ConfiguracionViewModel @Inject constructor(
             initialValue = emptyList()
         )
 
+    private val _esAdmin1Activo = MutableStateFlow(false)
+    val esAdmin1Activo: StateFlow<Boolean> = _esAdmin1Activo.asStateFlow()
+
     init {
         observarConfiguracion()
         verificarUsuarioSeed()
+        observarSesionAdmin1()
+    }
+
+    private fun observarSesionAdmin1() {
+        viewModelScope.launch {
+            turnoDao.getTurnoActivo().collectLatest { turno ->
+                if (turno != null) {
+                    val usuario = usuarioDao.getUsuarioById(turno.usuarioId)
+                    _esAdmin1Activo.value = usuario?.username?.equals("admin1", ignoreCase = true) == true
+                } else {
+                    _esAdmin1Activo.value = false
+                }
+            }
+        }
     }
 
     private fun verificarUsuarioSeed() {
@@ -243,6 +260,15 @@ class ConfiguracionViewModel @Inject constructor(
         }
     }
 
+    suspend fun verificarCredencialesAdmin1(usuarioInput: String, passwordInput: String): Boolean {
+        if (!usuarioInput.trim().equals("admin1", ignoreCase = true)) {
+            return false
+        }
+        val adminUser = usuarioDao.getUsuarioByUsername("admin1") ?: return false
+        val hash = CryptoManager.hashPassword(passwordInput.trim(), adminUser.salt)
+        return hash == adminUser.passwordHash
+    }
+
     fun editarUsuario(
         id: String,
         nuevoUsername: String,
@@ -260,6 +286,17 @@ class ConfiguracionViewModel @Inject constructor(
             if (usuarioActual == null) {
                 onResult(false, "Usuario no encontrado")
                 return@launch
+            }
+            // Si es la cuenta principal admin1, no se permite renombrar ni degradar su rol
+            if (usuarioActual.username.equals("admin1", ignoreCase = true) || usuarioActual.id == "1") {
+                if (!cleanUsername.equals("admin1", ignoreCase = true)) {
+                    onResult(false, "La cuenta principal 'admin1' no puede ser renombrada.")
+                    return@launch
+                }
+                if (nuevoRol != "ADMIN") {
+                    onResult(false, "La cuenta principal 'admin1' debe mantener siempre el rol de Administrador.")
+                    return@launch
+                }
             }
             // Si cambia de nombre, validar que no choque con otro
             if (!usuarioActual.username.equals(cleanUsername, ignoreCase = true)) {
@@ -294,6 +331,11 @@ class ConfiguracionViewModel @Inject constructor(
             val usuario = usuarioDao.getUsuarioById(id)
             if (usuario == null) {
                 onResult(false, "Usuario no encontrado")
+                return@launch
+            }
+            // La cuenta principal admin1 no puede eliminarse nunca
+            if (usuario.username.equals("admin1", ignoreCase = true) || usuario.id == "1") {
+                onResult(false, "Operación bloqueada: La cuenta principal 'admin1' está protegida por el sistema y no puede ser eliminada.")
                 return@launch
             }
             if (usuario.rol == "ADMIN") {

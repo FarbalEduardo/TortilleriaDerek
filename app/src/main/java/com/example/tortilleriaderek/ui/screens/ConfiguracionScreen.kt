@@ -15,12 +15,15 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Factory
 import androidx.compose.material.icons.filled.LocalOffer
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.TwoWheeler
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -123,6 +126,31 @@ fun ConfiguracionScreen(
 
     var usuarioAEliminar by remember { mutableStateOf<UsuarioConfig?>(null) }
     var errorAlertaMensaje by remember { mutableStateOf<String?>(null) }
+
+    // Control de permisos: ¿Estamos en la cuenta admin1 o se accede desde el login?
+    val esAdmin1Activo by viewModel.esAdmin1Activo.collectAsStateWithLifecycle()
+    val esAccesoDesdeLogin = onBackToLogin != null
+    val coroutineScope = rememberCoroutineScope()
+
+    var pendingAction by remember { mutableStateOf<(() -> Unit)?>(null) }
+    var showAdminConfirmDialog by remember { mutableStateOf(false) }
+    var adminConfirmUsernameInput by remember { mutableStateOf("admin1") }
+    var adminConfirmPasswordInput by remember { mutableStateOf("") }
+    var adminConfirmPasswordVisible by remember { mutableStateOf(false) }
+    var adminConfirmError by remember { mutableStateOf<String?>(null) }
+
+    fun ejecutarConPermisoAdmin(accion: () -> Unit) {
+        if (esAdmin1Activo) {
+            accion()
+        } else {
+            pendingAction = accion
+            adminConfirmUsernameInput = "admin1"
+            adminConfirmPasswordInput = ""
+            adminConfirmPasswordVisible = false
+            adminConfirmError = null
+            showAdminConfirmDialog = true
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -704,7 +732,10 @@ fun ConfiguracionScreen(
 
                                             IconButton(
                                                 onClick = {
-                                                    viewModel.eliminarRepartidor(rep.id)
+                                                    val repId = rep.id
+                                                    ejecutarConPermisoAdmin {
+                                                        viewModel.eliminarRepartidor(repId)
+                                                    }
                                                 },
                                                 modifier = Modifier.size(30.dp)
                                             ) {
@@ -724,183 +755,218 @@ fun ConfiguracionScreen(
                 }
             }
 
-            // ── 5. CARD: GESTIÓN DE USUARIOS DEL SISTEMA ──────────────────────
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("ajustes_usuarios_card"),
-                shape = RoundedCornerShape(22.dp),
-                color = Color.White,
-                border = BorderStroke(1.dp, BorderSubtle),
-                shadowElevation = 2.dp
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
+            // ── 5. CARD: GESTIÓN DE USUARIOS DEL SISTEMA (Solo visible si no se accede desde Login) ──────────────
+            if (!esAccesoDesdeLogin) {
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("ajustes_usuarios_card"),
+                    shape = RoundedCornerShape(22.dp),
+                    color = Color.White,
+                    border = BorderStroke(1.dp, BorderSubtle),
+                    shadowElevation = 2.dp
                 ) {
-                    // Encabezado con Botón "+ Agregar"
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Column(
+                        modifier = Modifier.padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(14.dp)
                     ) {
+                        // Encabezado con Botón "+ Agregar"
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(36.dp)
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .background(Color(0xFFFFF3EB)),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.People,
-                                    contentDescription = null,
-                                    tint = MaizPrimary,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-                            Column {
-                                Text(
-                                    text = "Gestión de Usuarios",
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
-                                )
-                                Text(
-                                    text = "Cuentas y roles del sistema",
-                                    fontSize = 11.sp,
-                                    color = TextSecondary
-                                )
-                            }
-                        }
-
-                        // Botón "+ Agregar"
-                        Surface(
-                            onClick = {
-                                nuevoUsuarioUsername = ""
-                                nuevoUsuarioPassword = ""
-                                nuevoUsuarioRol = "EMPLEADO"
-                                showAddUsuarioDialog = true
-                            },
-                            shape = RoundedCornerShape(14.dp),
-                            color = Color(0xFFFFF4EC)
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
                             Row(
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
                             ) {
-                                Icon(
-                                    imageVector = Icons.Default.Add,
-                                    contentDescription = null,
-                                    tint = Color(0xFFE05300),
-                                    modifier = Modifier.size(14.dp)
-                                )
-                                Text(
-                                    text = "Agregar",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFE05300)
-                                )
+                                Box(
+                                    modifier = Modifier
+                                        .size(36.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(Color(0xFFFFF3EB)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.People,
+                                        contentDescription = null,
+                                        tint = MaizPrimary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Column {
+                                    Text(
+                                        text = "Gestión de Usuarios",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = TextPrimary
+                                    )
+                                    Text(
+                                        text = "Cuentas y roles del sistema",
+                                        fontSize = 11.sp,
+                                        color = TextSecondary
+                                    )
+                                }
                             }
-                        }
-                    }
 
-                    // Lista de Usuarios
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        usuarios.forEach { usr ->
+                            // Botón "+ Agregar"
                             Surface(
-                                modifier = Modifier.fillMaxWidth(),
+                                onClick = {
+                                    nuevoUsuarioUsername = ""
+                                    nuevoUsuarioPassword = ""
+                                    nuevoUsuarioRol = "EMPLEADO"
+                                    showAddUsuarioDialog = true
+                                },
                                 shape = RoundedCornerShape(14.dp),
-                                color = Color(0xFFFAFAF9),
-                                border = BorderStroke(1.dp, Color(0xFFEFECE6))
+                                color = Color(0xFFFFF4EC)
                             ) {
                                 Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
                                     verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.SpaceBetween
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = null,
+                                        tint = Color(0xFFE05300),
+                                        modifier = Modifier.size(14.dp)
+                                    )
+                                    Text(
+                                        text = "Agregar",
+                                        fontSize = 12.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFFE05300)
+                                    )
+                                }
+                            }
+                        }
+
+                        // Lista de Usuarios
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            usuarios.forEach { usr ->
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    shape = RoundedCornerShape(14.dp),
+                                    color = Color(0xFFFAFAF9),
+                                    border = BorderStroke(1.dp, Color(0xFFEFECE6))
                                 ) {
                                     Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(horizontal = 12.dp, vertical = 10.dp),
                                         verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                                        horizontalArrangement = Arrangement.SpaceBetween
                                     ) {
-                                        // Avatar Inicial
-                                        Box(
-                                            modifier = Modifier
-                                                .size(34.dp)
-                                                .clip(CircleShape)
-                                                .background(if (usr.rol == "ADMIN") Color(0xFFFFEDE0) else Color(0xFFEDF2F7)),
-                                            contentAlignment = Alignment.Center
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                                         ) {
-                                            Text(
-                                                text = usr.username.take(2).uppercase(),
-                                                fontSize = 12.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = if (usr.rol == "ADMIN") Color(0xFFE05300) else Color(0xFF4A5568)
-                                            )
-                                        }
-
-                                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                            Text(
-                                                text = usr.username,
-                                                fontSize = 13.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = TextPrimary
-                                            )
-                                            Surface(
-                                                shape = RoundedCornerShape(6.dp),
-                                                color = if (usr.rol == "ADMIN") Color(0xFFFFF3E6) else Color(0xFFEDF2F7)
+                                            // Avatar Inicial
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(34.dp)
+                                                    .clip(CircleShape)
+                                                    .background(if (usr.rol == "ADMIN") Color(0xFFFFEDE0) else Color(0xFFEDF2F7)),
+                                                contentAlignment = Alignment.Center
                                             ) {
                                                 Text(
-                                                    text = usr.rol,
-                                                    fontSize = 10.sp,
-                                                    fontWeight = FontWeight.ExtraBold,
-                                                    color = if (usr.rol == "ADMIN") Color(0xFFC04B00) else Color(0xFF4A5568),
-                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp)
+                                                    text = usr.username.take(2).uppercase(),
+                                                    fontSize = 12.sp,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = if (usr.rol == "ADMIN") Color(0xFFE05300) else Color(0xFF4A5568)
                                                 )
                                             }
-                                        }
-                                    }
 
-                                    // Acciones: Editar y Borrar
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                    ) {
-                                        IconButton(
-                                            onClick = {
-                                                usuarioAEditar = usr
-                                                nuevoUsernameEdit = usr.username
-                                                nuevoRolEdit = usr.rol
-                                                nuevaPasswordEdit = ""
-                                            },
-                                            modifier = Modifier.size(30.dp)
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Edit,
-                                                contentDescription = "Editar ${usr.username}",
-                                                tint = TextSecondary,
-                                                modifier = Modifier.size(15.dp)
-                                            )
+                                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                                ) {
+                                                    Text(
+                                                        text = usr.username,
+                                                        fontSize = 13.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = TextPrimary
+                                                    )
+                                                    if (usr.username.equals("admin1", ignoreCase = true) || usr.id == "1") {
+                                                        Surface(
+                                                            shape = RoundedCornerShape(4.dp),
+                                                            color = Color(0xFFFEF3C7)
+                                                        ) {
+                                                            Text(
+                                                                text = "PRINCIPAL",
+                                                                fontSize = 9.sp,
+                                                                fontWeight = FontWeight.Bold,
+                                                                color = Color(0xFFB45309),
+                                                                modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.dp)
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                                Surface(
+                                                    shape = RoundedCornerShape(6.dp),
+                                                    color = if (usr.rol == "ADMIN") Color(0xFFFFF3E6) else Color(0xFFEDF2F7)
+                                                ) {
+                                                    Text(
+                                                        text = usr.rol,
+                                                        fontSize = 10.sp,
+                                                        fontWeight = FontWeight.ExtraBold,
+                                                        color = if (usr.rol == "ADMIN") Color(0xFFC04B00) else Color(0xFF4A5568),
+                                                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 1.dp)
+                                                    )
+                                                }
+                                            }
                                         }
 
-                                        IconButton(
-                                            onClick = {
-                                                usuarioAEliminar = usr
-                                            },
-                                            modifier = Modifier.size(30.dp)
+                                        // Acciones: Editar y Borrar (admin1 protegido contra borrado)
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                                         ) {
-                                            Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription = "Eliminar ${usr.username}",
-                                                tint = Color(0xFFA39E99),
-                                                modifier = Modifier.size(16.dp)
-                                            )
+                                            IconButton(
+                                                onClick = {
+                                                    usuarioAEditar = usr
+                                                    nuevoUsernameEdit = usr.username
+                                                    nuevoRolEdit = usr.rol
+                                                    nuevaPasswordEdit = ""
+                                                },
+                                                modifier = Modifier.size(30.dp)
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Edit,
+                                                    contentDescription = "Editar ${usr.username}",
+                                                    tint = TextSecondary,
+                                                    modifier = Modifier.size(15.dp)
+                                                )
+                                            }
+
+                                            if (!usr.username.equals("admin1", ignoreCase = true) && usr.id != "1") {
+                                                IconButton(
+                                                    onClick = {
+                                                        usuarioAEliminar = usr
+                                                    },
+                                                    modifier = Modifier.size(30.dp)
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Delete,
+                                                        contentDescription = "Eliminar ${usr.username}",
+                                                        tint = Color(0xFFA39E99),
+                                                        modifier = Modifier.size(16.dp)
+                                                    )
+                                                }
+                                            } else {
+                                                Box(
+                                                    modifier = Modifier.size(30.dp),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Lock,
+                                                        contentDescription = "Cuenta Principal Protegida",
+                                                        tint = Color(0xFFD1D5DB),
+                                                        modifier = Modifier.size(15.dp)
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -1001,10 +1067,14 @@ fun ConfiguracionScreen(
                     onClick = {
                         val precioParsed = nuevoPrecioInput.replace(',', '.').toDoubleOrNull()
                         val pesoParsed = nuevoPesoInput.toIntOrNull()
-                        if (precioParsed != null && precioParsed > 0) {
-                            viewModel.guardarPrecioYPesoProducto(prod.id, precioParsed, pesoParsed)
+                        if (precioParsed != null && precioParsed >= 0) {
+                            ejecutarConPermisoAdmin {
+                                viewModel.guardarPrecioYPesoProducto(prod.id, precioParsed, pesoParsed)
+                                productoAEditar = null
+                            }
+                        } else {
+                            productoAEditar = null
                         }
-                        productoAEditar = null
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaizPrimary),
                     shape = RoundedCornerShape(12.dp)
@@ -1088,14 +1158,18 @@ fun ConfiguracionScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        if (nuevoRepartidorNombre.isNotBlank()) {
-                            viewModel.agregarRepartidor(
-                                nombre = nuevoRepartidorNombre.trim(),
-                                motoRuta = nuevaMotoRuta.trim()
-                            )
-                            nuevoRepartidorNombre = ""
-                            nuevaMotoRuta = ""
-                            showAddRepartidorDialog = false
+                        val nom = nuevoRepartidorNombre.trim()
+                        val rut = nuevaMotoRuta.trim()
+                        if (nom.isNotBlank()) {
+                            ejecutarConPermisoAdmin {
+                                viewModel.agregarRepartidor(
+                                    nombre = nom,
+                                    motoRuta = rut
+                                )
+                                nuevoRepartidorNombre = ""
+                                nuevaMotoRuta = ""
+                                showAddRepartidorDialog = false
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaizPrimary),
@@ -1238,16 +1312,20 @@ fun ConfiguracionScreen(
                 Button(
                     onClick = {
                         val cleanName = nuevoUsuarioUsername.trim()
-                        if (cleanName.length >= 3 && nuevoUsuarioPassword.trim().length >= 4) {
-                            viewModel.crearUsuario(
-                                username = cleanName,
-                                passwordRaw = nuevoUsuarioPassword,
-                                rol = nuevoUsuarioRol
-                            ) { success, error ->
-                                if (success) {
-                                    showAddUsuarioDialog = false
-                                } else {
-                                    errorAlertaMensaje = error
+                        val pass = nuevoUsuarioPassword
+                        val rol = nuevoUsuarioRol
+                        if (cleanName.length >= 3 && pass.trim().length >= 4) {
+                            ejecutarConPermisoAdmin {
+                                viewModel.crearUsuario(
+                                    username = cleanName,
+                                    passwordRaw = pass,
+                                    rol = rol
+                                ) { success, error ->
+                                    if (success) {
+                                        showAddUsuarioDialog = false
+                                    } else {
+                                        errorAlertaMensaje = error
+                                    }
                                 }
                             }
                         } else {
@@ -1286,15 +1364,17 @@ fun ConfiguracionScreen(
             },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    val esAdmin1 = usr.username.equals("admin1", ignoreCase = true) || usr.id == "1"
                     OutlinedTextField(
                         value = nuevoUsernameEdit,
-                        onValueChange = { nuevoUsernameEdit = it },
+                        onValueChange = { if (!esAdmin1) nuevoUsernameEdit = it },
+                        enabled = !esAdmin1,
                         textStyle = LocalTextStyle.current.copy(
                             color = Color(0xFF111827),
                             fontWeight = FontWeight.Medium,
                             fontSize = 14.sp
                         ),
-                        label = { Text("Nombre de Usuario", color = Color(0xFF374151)) },
+                        label = { Text(if (esAdmin1) "Nombre de Usuario (admin1 Permanente)" else "Nombre de Usuario", color = Color(0xFF374151)) },
                         singleLine = true,
                         shape = RoundedCornerShape(12.dp),
                         modifier = Modifier.fillMaxWidth(),
@@ -1316,40 +1396,57 @@ fun ConfiguracionScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF374151)
                     )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
+                    if (esAdmin1) {
                         Surface(
-                            onClick = { nuevoRolEdit = "EMPLEADO" },
                             shape = RoundedCornerShape(10.dp),
-                            color = if (nuevoRolEdit == "EMPLEADO") Color(0xFFFFF3EB) else Color(0xFFFAFAFA),
-                            border = BorderStroke(1.dp, if (nuevoRolEdit == "EMPLEADO") MaizPrimary else BorderSubtle),
-                            modifier = Modifier.weight(1f)
+                            color = Color(0xFFFFF3EB),
+                            border = BorderStroke(1.dp, MaizPrimary),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
                             Text(
-                                text = "Empleado",
+                                text = "Administrador Principal (Rol Permanente)",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (nuevoRolEdit == "EMPLEADO") Color(0xFFC04B00) else Color(0xFF4B5563),
+                                color = Color(0xFFC04B00),
                                 modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
                             )
                         }
-
-                        Surface(
-                            onClick = { nuevoRolEdit = "ADMIN" },
-                            shape = RoundedCornerShape(10.dp),
-                            color = if (nuevoRolEdit == "ADMIN") Color(0xFFFFF3EB) else Color(0xFFFAFAFA),
-                            border = BorderStroke(1.dp, if (nuevoRolEdit == "ADMIN") MaizPrimary else BorderSubtle),
-                            modifier = Modifier.weight(1f)
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(
-                                text = "Administrador",
-                                fontSize = 12.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = if (nuevoRolEdit == "ADMIN") Color(0xFFC04B00) else Color(0xFF4B5563),
-                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
-                            )
+                            Surface(
+                                onClick = { nuevoRolEdit = "EMPLEADO" },
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (nuevoRolEdit == "EMPLEADO") Color(0xFFFFF3EB) else Color(0xFFFAFAFA),
+                                border = BorderStroke(1.dp, if (nuevoRolEdit == "EMPLEADO") MaizPrimary else BorderSubtle),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = "Empleado",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (nuevoRolEdit == "EMPLEADO") Color(0xFFC04B00) else Color(0xFF4B5563),
+                                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                                )
+                            }
+
+                            Surface(
+                                onClick = { nuevoRolEdit = "ADMIN" },
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (nuevoRolEdit == "ADMIN") Color(0xFFFFF3EB) else Color(0xFFFAFAFA),
+                                border = BorderStroke(1.dp, if (nuevoRolEdit == "ADMIN") MaizPrimary else BorderSubtle),
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text(
+                                    text = "Administrador",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (nuevoRolEdit == "ADMIN") Color(0xFFC04B00) else Color(0xFF4B5563),
+                                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 12.dp)
+                                )
+                            }
                         }
                     }
 
@@ -1393,17 +1490,21 @@ fun ConfiguracionScreen(
                 Button(
                     onClick = {
                         val cleanName = nuevoUsernameEdit.trim()
+                        val rol = nuevoRolEdit
+                        val pass = nuevaPasswordEdit.ifBlank { null }
                         if (cleanName.length >= 3) {
-                            viewModel.editarUsuario(
-                                id = usr.id,
-                                nuevoUsername = cleanName,
-                                nuevoRol = nuevoRolEdit,
-                                nuevaPasswordRaw = nuevaPasswordEdit.ifBlank { null }
-                            ) { success, error ->
-                                if (success) {
-                                    usuarioAEditar = null
-                                } else {
-                                    errorAlertaMensaje = error
+                            ejecutarConPermisoAdmin {
+                                viewModel.editarUsuario(
+                                    id = usr.id,
+                                    nuevoUsername = cleanName,
+                                    nuevoRol = rol,
+                                    nuevaPasswordRaw = pass
+                                ) { success, error ->
+                                    if (success) {
+                                        usuarioAEditar = null
+                                    } else {
+                                        errorAlertaMensaje = error
+                                    }
                                 }
                             }
                         }
@@ -1448,11 +1549,14 @@ fun ConfiguracionScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        viewModel.eliminarUsuario(usr.id) { success, error ->
-                            if (!success) {
-                                errorAlertaMensaje = error
+                        val usrId = usr.id
+                        ejecutarConPermisoAdmin {
+                            viewModel.eliminarUsuario(usrId) { success, error ->
+                                if (!success) {
+                                    errorAlertaMensaje = error
+                                }
+                                usuarioAEliminar = null
                             }
-                            usuarioAEliminar = null
                         }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = ErrorRed),
@@ -1463,6 +1567,177 @@ fun ConfiguracionScreen(
             },
             dismissButton = {
                 TextButton(onClick = { usuarioAEliminar = null }) {
+                    Text("Cancelar", color = Color(0xFF4B5563))
+                }
+            }
+        )
+    }
+
+    // ── DIÁLOGO CONFIRMACIÓN / AUTORIZACIÓN ADMIN1 ────────────────────────────
+    if (showAdminConfirmDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showAdminConfirmDialog = false
+                pendingAction = null
+            },
+            shape = RoundedCornerShape(20.dp),
+            containerColor = Color.White,
+            titleContentColor = Color(0xFF111827),
+            textContentColor = Color(0xFF111827),
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(38.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color(0xFFFFF3EB)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Security,
+                            contentDescription = null,
+                            tint = MaizPrimary,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = "Autorización Requerida",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF111827)
+                        )
+                        Text(
+                            text = "Cuenta Principal admin1",
+                            fontSize = 11.sp,
+                            color = Color(0xFF6B7280)
+                        )
+                    }
+                }
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Para modificar la configuración del sistema, ingrese la confirmación de la cuenta de administración principal.",
+                        fontSize = 13.sp,
+                        color = Color(0xFF374151),
+                        lineHeight = 18.sp
+                    )
+
+                    OutlinedTextField(
+                        value = adminConfirmUsernameInput,
+                        onValueChange = { adminConfirmUsernameInput = it },
+                        textStyle = LocalTextStyle.current.copy(
+                            color = Color(0xFF111827),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp
+                        ),
+                        label = { Text("Usuario Administrador", color = Color(0xFF374151)) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color(0xFF111827),
+                            unfocusedTextColor = Color(0xFF111827),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedBorderColor = MaizPrimary,
+                            unfocusedBorderColor = Color(0xFFD1D5DB),
+                            focusedLabelColor = MaizPrimary,
+                            unfocusedLabelColor = Color(0xFF374151)
+                        )
+                    )
+
+                    OutlinedTextField(
+                        value = adminConfirmPasswordInput,
+                        onValueChange = {
+                            adminConfirmPasswordInput = it
+                            adminConfirmError = null
+                        },
+                        textStyle = LocalTextStyle.current.copy(
+                            color = Color(0xFF111827),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 14.sp
+                        ),
+                        label = { Text("Contraseña de admin1", color = Color(0xFF374151)) },
+                        visualTransformation = if (adminConfirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            IconButton(onClick = { adminConfirmPasswordVisible = !adminConfirmPasswordVisible }) {
+                                Icon(
+                                    imageVector = if (adminConfirmPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                                    contentDescription = null,
+                                    tint = Color(0xFF4B5563)
+                                )
+                            }
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = Color(0xFF111827),
+                            unfocusedTextColor = Color(0xFF111827),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White,
+                            focusedBorderColor = MaizPrimary,
+                            unfocusedBorderColor = Color(0xFFD1D5DB),
+                            focusedLabelColor = MaizPrimary,
+                            unfocusedLabelColor = Color(0xFF374151)
+                        )
+                    )
+
+                    adminConfirmError?.let { err ->
+                        Surface(
+                            shape = RoundedCornerShape(8.dp),
+                            color = Color(0xFFFEE2E2),
+                            border = BorderStroke(1.dp, Color(0xFFEF4444)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = err,
+                                color = Color(0xFFB91C1C),
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            val esValido = viewModel.verificarCredencialesAdmin1(
+                                adminConfirmUsernameInput,
+                                adminConfirmPasswordInput
+                            )
+                            if (esValido) {
+                                showAdminConfirmDialog = false
+                                val accion = pendingAction
+                                pendingAction = null
+                                accion?.invoke()
+                            } else {
+                                adminConfirmError = "Credenciales incorrectas. Verifique el usuario y contraseña de admin1."
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaizPrimary),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("Autorizar", fontWeight = FontWeight.Bold, color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showAdminConfirmDialog = false
+                        pendingAction = null
+                    }
+                ) {
                     Text("Cancelar", color = Color(0xFF4B5563))
                 }
             }
@@ -1555,14 +1830,16 @@ fun ConfiguracionScreen(
                         val merm = editMermaInput.replace(',', '.').toDoubleOrNull() ?: configProduccion.mermaToleradaKgPorBulto
                         val pctMerma = if (kMasa > 0) ((merm / kMasa) * 100.0) else 3.8
 
-                        viewModel.guardarEstandaresProduccion(
-                            pesoBulto = pBulto,
-                            kgMasa = kMasa,
-                            rendimiento = rend,
-                            merma = merm,
-                            porcentajeMerma = pctMerma
-                        )
-                        showEditEstandaresDialog = false
+                        ejecutarConPermisoAdmin {
+                            viewModel.guardarEstandaresProduccion(
+                                pesoBulto = pBulto,
+                                kgMasa = kMasa,
+                                rendimiento = rend,
+                                merma = merm,
+                                porcentajeMerma = pctMerma
+                            )
+                            showEditEstandaresDialog = false
+                        }
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaizPrimary)
                 ) {

@@ -27,7 +27,7 @@ El desarrollo del proyecto se realizó bajo las mejores prácticas modernas de d
 4. **Almacenamiento Local (Offline-First)**: Android Room Database (Versión 7) con DAOs especializados, transacciones atómicas y migraciones destructivas seguras para desarrollo.
 5. **Seguridad Criptográfica**: Implementación nativa de `CryptoManager` con hashing **PBKDF2WithHmacSHA256** (10,000 iteraciones) y sales criptográficas aleatorias (Salt de 256 bits).
 6. **Manejo de Estados**: Patrón MVI/MVVM desacoplado con UiState inmutable, UiEvent para interacciones del operador y UiEffect para notificaciones y alertas one-shot.
-7. **Pruebas Automatizadas**: 85 pruebas unitarias con JUnit4, MockK y Coroutines Test Dispatcher garantizando cero regresiones.
+7. **Pruebas Automatizadas**: 87 pruebas unitarias con JUnit4, MockK y Coroutines Test Dispatcher garantizando cero regresiones.
 
 ---
 
@@ -42,8 +42,9 @@ El desarrollo del proyecto se realizó bajo las mejores prácticas modernas de d
   * Ninguna credencial se almacena en texto plano en la base de datos.
   * Cada usuario cuenta con un `salt` único generado mediante `SecureRandom`.
   * Verificación de credenciales con hashing seguro PBKDF2.
-* **Sembrado de Usuario Administrador Oficial**:
-  * El sistema inicializa en una instalación limpia únicamente con el usuario de administración predeterminado `admin1` (`admin123`, rol `ADMIN`).
+* **Sembrado de Cuenta Master `admin1` (`admin123`)**:
+  * El sistema inicializa en una instalación limpia únicamente con el usuario de administración predeterminado `admin1` (contraseña inicial `admin123`, rol `ADMIN`).
+  * **Protección inviolable**: `admin1` tiene bloqueo permanente de eliminación, no puede ser renombrado ni degradado de rol administrativo.
 * **Ciclo de Vida de Turnos**:
   * Apertura de turno con validación de saldo base en caja (`fondoInicial`).
   * Asociación estricta de todas las transacciones, ventas, tandas y mermas al `turnoId` activo.
@@ -69,54 +70,41 @@ El desarrollo del proyecto se realizó bajo las mejores prácticas modernas de d
 
 ---
 
-### 🛵 3. Módulo de Repartidores y Rutas de Mayoreo
-* **Control de Flotilla de Motocicletas**:
-  * Catálogo de repartidores con badges identificadores (`#01`, `#02`...), moto asignada y nombre de ruta (ej. *Moto 01 • Ruta Centro*).
-  * En una instalación limpia, el catálogo arranca completamente vacío hasta que el usuario añade su personal.
-* **Despacho y Salida a Ruta**:
-  * Diálogo de salida con asignación de paquetes de tortilla para reparto.
-  * Cálculo reactivo de la carga inicial en kilogramos (`cargaInicialKg`) y del importe total que el chofer tiene pendiente de cobrar (`pendienteCobro`).
-* **Liquidación de Ruta**:
-  * Diálogo integral de liquidación al regreso del repartidor: captura de paquetes devueltos no vendidos y efectivo entregado.
-  * Cálculo de paquetes efectivamente comercializados.
-  * Cada liquidación genera un ticket formal de venta de mayoreo en el sistema con folio único cronológico (`R-0001`, `R-0002`...).
+### 🛵 3. Módulo de Despacho y Liquidación de Rutas (Repartidores)
+* **Control de Salidas a Ruta**:
+  * Asignación de carga inicial en kilogramos por motocicleta.
+  * Descuento automático de la tortilla en tienda al autorizar la salida del repartidor.
+  * Registro de folios y control de estatus de la ruta (`EN_RUTA` / `LIQUIDADO`).
+* **Liquidación y Arqueo de Chofer**:
+  * Registro de kilogramos devueltos al final del recorrido (tortilla fría o no entregada).
+  * Reingreso automático de producto devuelto al inventario de mostrador.
+  * Cálculo instantáneo del total cobrado y registro del pendiente de cobro (saldo fiado a clientes de ruta).
 
 ---
 
-### 🏭 4. Módulo de Control de Producción y Mermas
-* **Planificación y Registro de Tandas**:
-  * Registro por bultos de harina procesados (sacos estándar).
-  * Cálculo reactivo de masa cruda estimada a producir y kilos netos de tortilla terminada esperada.
-  * Registro de tanda con marca de tiempo, usuario responsable y actualización inmediata del stock en tienda.
-* **Control Riguroso de Mermas**:
-  * Diálogo de registro rápido de merma de producción.
-  * Motivos configurables: tortilla fría, merma de arranque, desajuste de comal/cortadora, o rotura en empaque.
-  * Cálculo del porcentaje de merma en relación con los bultos procesados frente al porcentaje de tolerancia configurado en el sistema.
-* **Balance de Tienda en Vivo**:
-  * Cuadro de mandos de producción que muestra: Tortilla producida neta, Total vendido en mostrador, Total vendido en reparto, Merma acumulada y Disponible real en anaquel.
+### 🏭 4. Módulo de Producción de Masa y Harina
+* **Registro de Tandas de Producción**:
+  * Captura de bultos de harina utilizados (50 kg c/u).
+  * Cálculo dinámico y proyectado de masa cruda producida y kilogramos de tortilla estimados según los factores de conversión de la tortillería.
+* **Control de Mermas**:
+  * Registro de pérdidas operativas en kg con motivos predeterminados (masa quemada, tortilla defectuosa, prueba de máquina, etc.).
+  * Impacto directo en el balance de inventario neto.
 
 ---
 
-### 📜 5. Módulo de Historial de Ventas
-* **Cronología de Transacciones**:
-  * Lista detallada de todas las ventas realizadas agrupadas por orden cronológico inverso.
-  * Visualización clara del tipo de venta:
-    * **Mostrador / Menudeo**: desglose de kilos y paquetes, importe cobrado, método de pago y cajero.
-    * **Repartidor / Mayoreo**: folio de liquidación, chofer, ruta, paquetes entregados e importe cobrado.
-* **Navegación Modal Estricta**:
-  * Se retiró intencionalmente la barra de navegación inferior (`TortilleriaNavBar`) en esta pantalla. El operador debe usar obligatoriamente la flecha de retroceso superior, asegurando un flujo de supervisión controlado.
-* **Diseño Tipográfico Adaptativo**:
-  * Corrección de casos límite de wrapping y truncamiento de palabras como *"Mostrador"* y números de folio en pantallas pequeñas.
+### 📜 5. Módulo de Historial de Ventas y Filtros Avanzados
+* **Consulta Completa de Transacciones**:
+  * Listado reactivo de todas las ventas del turno o por rango de fechas.
+  * Tarjetas de venta optimizadas contra desbordes de texto (`TextOverflow.Ellipsis`, layout responsivo de badges e información de ticket).
+* **Enfoque de Navegación Estricto**:
+  * Ocultamiento automático de la barra de navegación inferior (`BottomNavigationView`) al abrir el historial de ventas para forzar la confirmación de retorno mediante la barra superior de retroceso.
 
 ---
 
-### 📈 6. Módulo de Métricas y Analítica Financiera
-* **Selector de Rango de Fechas de Alto Contraste**:
-  * Rediseño completo de la paleta de colores del selector de fechas (`DatePickerDialog` y `DateRangePicker`).
-  * Fondo blanco puro (`#FFFFFF`) con textos en gris oscuro (`#1F2937`) y selección en tono Maíz/Naranja, resolviendo el problema de texto invisible o lavado sobre fondos claros.
-* **Filtros de Período**:
-  * Botones rápidos para consultar: *Hoy*, *Esta Semana*, *Este Mes* o *Rango Personalizado*.
-* **Dashboard Financiero**:
+### 📊 6. Módulo de Métricas y Analítica de Negocio
+* **Selector Dinámico de Período con Alto Contraste**:
+  * Selector de días (Hoy, 7 Días, Mes) corregido con fondo oscuro y badges visibles (`SurfaceWarm` / `BorderSubtle`) evitando que el fondo blanco oculte la información.
+* **Indicadores Clave de Desempeño (KPIs)**:
   * Total de ingresos generados en el período.
   * Desglose porcentual Mostrador vs Reparto.
   * Ticket promedio por transacción.
@@ -125,17 +113,21 @@ El desarrollo del proyecto se realizó bajo las mejores prácticas modernas de d
 
 ---
 
-### ⚙️ 7. Módulo de Configuración Dinámica y Ajustes
-* **Precios y Estándares Iniciales en Cero (Clean Install)**:
-  * Al abrir por primera vez la aplicación, los precios de los productos (Kilo, Medio Paquete, Paquete Mostrador, Paquete Mayoreo) y los parámetros de producción (peso de bulto, rendimiento, masa por bulto, merma tolerada) inician en `0.00`.
-  * El usuario ingresa manualmente sus propios precios y fórmulas de rendimiento, las cuales se persisten inmediatamente en SQLite/Room.
-* **Gestión de Pesos de Paquetes en Gramos**:
-  * Capacidad de ajustar los gramos exactos que lleva cada paquete de mostrador o reparto (ej. 800g, 400g, etc.).
-* **Administración Completa de Cuentas y Contraseñas (CRUD)**:
-  * Interfaz para visualizar todos los usuarios registrados en Room Database.
-  * Diálogo para **Agregar Nuevo Usuario**: nombre de usuario (mínimo 3 caracteres), contraseña (mínimo 4 caracteres) y asignación de rol (`ADMIN` o `EMPLEADO`). La contraseña se procesa a través de `CryptoManager` con Salt aleatorio y Hash PBKDF2.
-  * Diálogo para **Editar Usuario**: cambio de nombre, cambio de rol y actualización opcional de contraseña.
-  * Diálogo para **Eliminar Usuario**: confirmación de borrado con validación de seguridad de alto nivel: **el sistema bloquea cualquier intento de eliminar o degradar al último Administrador**, impidiendo que el negocio se quede sin acceso administrativo.
+### ⚙️ 7. Módulo de Configuración Dinámica y Ajustes Blindados
+* **Acceso Seguro desde Login**:
+  * Al ingresar a Configuración directamente desde el icono de engrane en la pantalla de inicio (Login), la sección de **Gestión de Usuarios se oculta por completo**, impidiendo que cualquier persona no autenticada visualice las cuentas del sistema.
+* **Precios y Estándares Iniciales en Cero (Instalación Limpia)**:
+  * Al abrir por primera vez la app, precios y parámetros de producción inician en `0.00`, permitiendo al administrador ingresar sus propios valores que se persisten en Room Database.
+* **Elevación de Privilegios de Seguridad (Admin Confirmation)**:
+  * Si la aplicación no está operando bajo la cuenta `admin1`, **cualquier intento de guardar cambios** en:
+    * Precios y pesos en gramos de mostrador/reparto,
+    * Estándares de producción y rendimiento por bulto,
+    * Alta o baja de repartidores,
+    * Creación, edición o eliminación de usuarios,
+    **despliega un modal de confirmación de credenciales de Administrador**, exigiendo el usuario y contraseña de `admin1` validados criptográficamente en tiempo real.
+* **Protección Estricta del Administrador Principal (`admin1`)**:
+  * Cuenta maestra inalterable e imposible de eliminar.
+  * Se prohíbe eliminar al último administrador restante del sistema.
 
 ---
 
@@ -169,13 +161,13 @@ La base de datos relacional local se compone de 8 tablas optimizadas:
 
 ## 🧪 Pruebas Unitarias y Aseguramiento de Calidad (QA)
 
-Se implementó una suite completa de **85 pruebas unitarias automatizadas** que se ejecutan sobre la JVM sin requerir emulador, cubriendo:
+Se implementó una suite completa de **87 pruebas unitarias automatizadas** que se ejecutan sobre la JVM sin requerir emulador, cubriendo:
 
 * `AuthRepositoryImplTest`: Hashing criptográfico, validación de login correcto/incorrecto y resiliencia ante usuarios inexistentes.
 * `LoginUseCaseTest` & `AbrirTurnoUseCaseTest`: Validación de reglas de negocio para inicio de sesión y apertura de turnos.
 * `VentaViewModelTest`: Cálculo de subtotales, pesaje acumulado, flujo de ticket, emisión de venta, salida a ruta y liquidación de repartidores.
 * `ProduccionViewModelTest`: Registro de tandas, cálculo dinámico de masa/tortilla según bultos y registro de mermas.
-* `ConfiguracionViewModelTest`: Guardado reactivo de precios y pesos en Room, alta y baja de repartidores, creación de usuarios con hashing PBKDF2, validación de duplicados y bloqueo de borrado del último administrador.
+* `ConfiguracionViewModelTest`: Guardado reactivo de precios y pesos en Room, alta y baja de repartidores, creación de usuarios con hashing PBKDF2, validación de credenciales `admin1`, rechazo de borrado de `admin1`, bloqueo de renombramiento/democión de `admin1` y bloqueo de borrado del último administrador.
 * `HistorialViewModelTest` & `MetricasViewModelTest`: Agregación de ventas por turno, filtros de fechas y cálculo de analítica.
 
 ---
