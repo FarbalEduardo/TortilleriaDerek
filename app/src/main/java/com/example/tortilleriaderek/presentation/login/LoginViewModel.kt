@@ -55,6 +55,9 @@ class LoginViewModel @Inject constructor(
                     _effect.send(LoginUiEffect.NavigateToSettings)
                 }
             }
+            LoginUiEvent.OnBackupClick -> {
+                // Manejado a nivel de UI para desplegar selector de exportación/importación
+            }
         }
     }
 

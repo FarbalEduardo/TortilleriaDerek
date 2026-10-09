@@ -102,7 +102,7 @@ fun HeroSalesCard(
                             modifier = Modifier.size(15.dp)
                         )
                         Text(
-                            text = "Cerrar Turno",
+                            text = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.header_cerrar_turno),
                             color = MaizPrimary,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold
@@ -123,7 +123,7 @@ fun HeroSalesCard(
                     modifier = Modifier.size(15.dp)
                 )
                 Text(
-                    text = "TOTAL VENTA DEL DÍA",
+                    text = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.header_scope_dia),
                     color = Color.White.copy(alpha = 0.9f),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
@@ -146,7 +146,8 @@ fun HeroSalesCard(
                         color = Color.White,
                         fontSize = 32.sp,
                         fontWeight = FontWeight.ExtraBold,
-                        letterSpacing = (-0.5).sp
+                        letterSpacing = (-0.5).sp,
+                        style = androidx.compose.ui.text.TextStyle(fontFeatureSettings = "tnum")
                     )
                     Text(
                         text = "MXN",

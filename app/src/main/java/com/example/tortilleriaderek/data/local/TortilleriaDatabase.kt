@@ -29,8 +29,8 @@ import com.example.tortilleriaderek.data.local.entity.VentaEntity
         RepartidorEntity::class,
         RutaRepartidorEntity::class
     ],
-    version = 7,
-    exportSchema = false
+    version = 8,
+    exportSchema = true
 )
 abstract class TortilleriaDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao

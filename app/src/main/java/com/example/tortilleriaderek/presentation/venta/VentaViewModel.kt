@@ -502,14 +502,31 @@ class VentaViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val totalAcumulado = _uiState.value.totalVentasDia
+            val ventasMostrador = _uiState.value.totalVentasMostrador
+            val ventasRepartidores = _uiState.value.totalVentasRepartidores
             val fechaCierre = System.currentTimeMillis()
-            val turnoId = _uiState.value.turnoActivo?.id
+            val turno = _uiState.value.turnoActivo
+            val turnoId = turno?.id
+            val fondo = turno?.fondoInicial ?: 0.0
+            val efectivoEsperado = fondo + totalAcumulado
 
             if (turnoId != null) {
                 turnoDao.cerrarTurno(
                     turnoId = turnoId,
                     fechaCierre = fechaCierre,
                     totalVentas = totalAcumulado
+                )
+                turnoDao.cerrarTurnoConArqueo(
+                    turnoId = turnoId,
+                    fechaCierre = fechaCierre,
+                    usuarioCierreId = _uiState.value.usuarioActivoNombre,
+                    totalVentasMostrador = ventasMostrador,
+                    totalCobradoReparto = ventasRepartidores,
+                    totalVentas = totalAcumulado,
+                    efectivoEsperado = efectivoEsperado,
+                    efectivoContado = efectivoEsperado,
+                    diferenciaArqueo = 0.0,
+                    notasCierre = "Corte cerrado correctamente."
                 )
             }
             // Garantizar que no quede absolutamente ningún turno en estado ABIERTO en Room

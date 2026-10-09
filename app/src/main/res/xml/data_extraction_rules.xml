@@ -1,19 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-   Sample data extraction rules file; uncomment and customize as necessary.
-   See https://developer.android.com/about/versions/12/backup-restore#xml-changes
-   for details.
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+   Reglas de extracción de datos para Android 12+ (API 31+).
+   Controla la transferencia en nube y dispositivos.
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
-        <include .../>
-        <exclude .../>
-        -->
+        <!-- Excluir bases de datos locales y SharedPreferences cifradas de la copia automática en nube -->
+        <exclude domain="database" path="tortilleria_db"/>
+        <exclude domain="database" path="tortilleria_db-wal"/>
+        <exclude domain="database" path="tortilleria_db-shm"/>
+        <exclude domain="sharedpref" path="EncryptedSharedPreferences.xml"/>
     </cloud-backup>
-    <!--
     <device-transfer>
-        <include .../>
-        <exclude .../>
+        <!-- Permitir transferencia segura de dispositivo a dispositivo (Restore Credentials / Cable setup) -->
+        <include domain="database" path="tortilleria_db"/>
+        <include domain="database" path="tortilleria_db-wal"/>
+        <include domain="database" path="tortilleria_db-shm"/>
     </device-transfer>
-    -->
 </data-extraction-rules>

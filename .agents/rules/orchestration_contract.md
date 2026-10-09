@@ -15,10 +15,16 @@ Toda nueva funcionalidad o mejora debe seguir este orden estricto. El pase de un
     *   🛡️ **`security-expert`**: Revisa la spec y anexa los criterios de seguridad (Given/When/Then) si la tarea involucra acceso, persistencia o backups.
     *   🏆 **`quality-pm-expert`**: Actúa como *Gatekeeper*. Sella la spec como "Validada". No se tira una línea de código de producción hasta este punto.
 
-### Fase 2: Prototipado Visual (Exploración)
-*   **Acción:** Creación de componentes visuales aislados.
+### Fase 2: Modo de Diseño (Exploración Visual & Stitch Prototyping)
+*   **Acción:** Creación de componentes visuales aislados siguiendo [.agents/workflows/design_mode_workflow.md](file:///d:/TortilleriaDerek/.agents/workflows/design_mode_workflow.md).
 *   **Delegación:**
-    *   🎨 **`design-ui-expert`**: Traduce wireframes a componentes Compose 100% Stateless con `@Preview` en móvil y tablet. Prohibido conectarlos a lógica real. Utiliza mocks estáticos.
+    *   🎨 **`design-ui-expert`**: 
+        1. Consulta `stitch_designs/` y mapea wireframes a tokens oficiales *Maíz & Masa*.
+        2. Registra de inmediato todos los textos en `res/values/strings.xml` (cero hardcoding).
+        3. Genera componentes 100% Stateless (<200 líneas) en `ui/components/<feature>/` con touch targets de 56-64dp y tipografía tabular `tnum`.
+        4. Configura `@Preview` multi-dispositivo (móvil y tablet) con mocks estáticos.
+        5. Exporta el contrato `UiState` a `mobile-developer`.
+    *   **Prohibición Estricta:** Conectar componentes a ViewModels, Room o lógica de base de datos durante esta fase.
 
 ### Fase 3: Lógica Core y Test-First (TDD)
 *   **Acción:** Implementación de Data, Domain y ViewModel.

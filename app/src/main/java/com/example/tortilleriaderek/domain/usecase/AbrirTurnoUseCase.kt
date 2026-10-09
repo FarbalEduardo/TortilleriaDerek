@@ -5,29 +5,48 @@ import com.example.tortilleriaderek.data.local.dao.RutaRepartidorDao
 import com.example.tortilleriaderek.data.local.dao.TurnoDao
 import com.example.tortilleriaderek.data.local.entity.RutaRepartidorEntity
 import com.example.tortilleriaderek.data.local.entity.TurnoEntity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
 /**
  * Creado por 🏗️ mobile-developer y 🛡️ security-expert.
- * Genera el turno asociado al usuario e inicializa limpias las rutas de repartidores
- * con status PENDIENTE_SALIDA y carga en 0.0 kg basándose en el catálogo dinámico de Room.
+ * Genera el turno correlativo (folio CORTE-YYYYMMDD-0X), inicializa el fondo de caja
+ * y prepara las rutas de reparto dinámicas basándose en el catálogo de Room.
  */
 class AbrirTurnoUseCase @Inject constructor(
     private val turnoDao: TurnoDao,
     private val rutaRepartidorDao: RutaRepartidorDao,
     private val repartidorDao: RepartidorDao
 ) {
-    suspend operator fun invoke(usuarioId: String) {
+    suspend operator fun invoke(usuarioId: String, fondoInicial: Double = 0.0) {
         val ahora = System.currentTimeMillis()
+        val formatoDia = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val formatoCompacto = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        val fechaDate = Date(ahora)
+        val fechaDiaTexto = formatoDia.format(fechaDate)
+        val fechaCompacta = formatoCompacto.format(fechaDate)
+
         // Cierra cualquier turno anterior que haya quedado huérfano en estado ABIERTO
         turnoDao.cerrarTodosLosTurnosActivos(ahora)
+
+        // Calcular número correlativo del turno en el día
+        val siguienteNumero = turnoDao.getSiguienteNumeroTurnoDia(fechaDiaTexto)
+        val folio = "CORTE-$fechaCompacta-%02d".format(siguienteNumero)
+
         val turnoId = UUID.randomUUID().toString()
         val turno = TurnoEntity(
             id = turnoId,
+            folioCorte = folio,
+            fechaDiaTexto = fechaDiaTexto,
+            numeroTurnoDia = siguienteNumero,
             fechaApertura = ahora,
             estado = "ABIERTO",
-            usuarioId = usuarioId
+            usuarioId = usuarioId,
+            fondoInicial = fondoInicial,
+            efectivoEsperado = fondoInicial
         )
         turnoDao.insertTurno(turno)
 

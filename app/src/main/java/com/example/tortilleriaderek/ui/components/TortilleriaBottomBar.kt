@@ -70,25 +70,25 @@ fun TortilleriaNavBar(
             ) {
                 NavBarItem(
                     icon = Icons.Default.PointOfSale,
-                    label = "Venta",
+                    label = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.nav_venta),
                     isSelected = activeItem == "Venta",
                     onClick = onNavigateToVenta
                 )
                 NavBarItem(
                     icon = Icons.Default.OutdoorGrill,
-                    label = "Producción",
+                    label = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.nav_produccion),
                     isSelected = activeItem == "Producción",
                     onClick = onNavigateToProduccion
                 )
                 NavBarItem(
                     icon = Icons.Default.Analytics,
-                    label = "Métricas",
+                    label = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.nav_metricas),
                     isSelected = activeItem == "Métricas",
                     onClick = onNavigateToMetricas
                 )
                 NavBarItem(
                     icon = Icons.Default.Settings,
-                    label = "Ajustes",
+                    label = androidx.compose.ui.res.stringResource(com.example.tortilleriaderek.R.string.nav_ajustes),
                     isSelected = activeItem == "Ajustes",
                     onClick = onNavigateToConfiguracion
                 )

@@ -230,3 +230,106 @@
 
 **Estado actual:** Contadores de mostrador iniciando en cero absoluto y repartidores limpios sin asignación (US16) completados y verificados.
 
+---
+
+## Feature Siguiente: Backup y Transferencia de Datos entre Teléfonos (Opción 1 — SQLite Directo)
+**Spec:** `docs/features/backup_transferencia_db_spec.md` - [Pendiente]
+
+### Checklist de Implementación SDD
+
+- [x] **Fase 1: Especificación y Criterios (Inception)**
+  - Requerimientos documentados (US-BKP-01 al 09): exportar `.db` con selector SAF (`CreateDocument`), importar `.db`, blindaje energético (batería ≥ 25% o cargador conectado), autenticación obligatoria de Administrador Principal (acceso sin sesión abierta), blindaje estricto de turnos cerrados, micro-lección animada de versión, advertencia destructiva con selector de contraseña de admin (Opción 1), overlay animado de carga y reinicio guiado.
+  - Criterios de seguridad (🛡️ `security-expert`): blindaje energético contra corrupción flash, autenticación con hash PBKDF2 + salt para usuarios no logueados, SHA-256 de integridad, rollback automático con `.prev`, mitigación total de lockout con `PoliticaPasswordAdmin` y garantía de supervivencia del Administrador Principal (`admin1`).
+  - 8 criterios de aceptación QA y 14 casos límite (🏆 `quality-pm-expert`): batería baja (< 25%), corrupción, WAL, versión incompatible con micro-lección, discrepancia de contraseñas de admin, espacio insuficiente, turnos cerrados, crash durante importación.
+
+- [x] **Fase 2: Lógica Core, UseCase y Generación de Pruebas Unitarias (🏗️ `mobile-developer` + 🏆 `quality-pm-expert`)**
+  - Creación de [BackupModels.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/domain/model/BackupModels.kt): `BatteryStatusProvider`, `PoliticaPasswordAdmin`, `DbInspectionResult`, `BackupExportInfo` y `BackupError`.
+  - Creación de [BackupStoragePort.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/domain/repository/BackupStoragePort.kt): abstracción para SAF, SQLite checkpoints y restauración física.
+  - Creación de [BackupUseCase.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/domain/usecase/BackupUseCase.kt) con validaciones en cascada de batería, autenticación criptográfica de administrador, bloqueo por turnos abiertos e inspección de versión SQLite.
+  - Creación y ejecución exitosa de [BackupUseCaseTest.kt](file:///d:/TortilleriaDerek/app/src/test/java/com/example/tortilleriaderek/domain/usecase/BackupUseCaseTest.kt) (19 pruebas unitarias cubriendo batería ≥ 25%, roles, PBKDF2, turnos abiertos, versionado v7 y políticas de contraseña -> **BUILD SUCCESSFUL**).
+
+- [x] **Fase 3: Presentation — ViewModel y Efectos MVI (🏗️ `mobile-developer`)**
+  - Creación de [BackupContract.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/presentation/backup/BackupContract.kt) definiendo `BackupUiState`, `BackupUiIntent` y `BackupUiEffect` para los 6 modales y contratos SAF.
+  - Creación de [BackupViewModel.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/presentation/backup/BackupViewModel.kt) con validaciones de batería, bloqueo por turno activo, autenticación de admin, checkpoints WAL e importación con rollback.
+  - Cobertura de pruebas unitarias al 100% en [BackupViewModelTest.kt](file:///d:/TortilleriaDerek/app/src/test/java/com/example/tortilleriaderek/presentation/backup/BackupViewModelTest.kt) (batería baja, autenticación admin, selector SAF, micro-lección y reinicio).
+
+- [x] **Fase 4: UI Compose "Maíz & Masa POS" (Cero Diseño Genérico) e Integración (🎨 `design-ui-expert` + 🏗️ `mobile-developer`)**
+  - Creación de [DialogBateriaInsuficiente.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogBateriaInsuficiente.kt): modal de alerta energética (< 25%) con badge en Terracota y recomendación de cargador.
+  - Creación de [DialogAutenticacionAdminBackup.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogAutenticacionAdminBackup.kt): modal de autenticación segura PBKDF2 para usuarios sin sesión activa.
+  - Creación de [DialogAdvertenciaReemplazoDb.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogAdvertenciaReemplazoDb.kt): semáforo de riesgo y selector interactivo de 3 opciones de contraseña de administrador (Opción 1).
+  - Creación de [OverlayCargandoDbAnimado.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/OverlayCargandoDbAnimado.kt): overlay bloqueante con animación continua en Canvas (silo de datos y pulsos concéntricos).
+  - Creación de [DialogMicroLeccionVersion.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogMicroLeccionVersion.kt): micro-lección animada e interactiva en 3 pasos cuando las versiones SQLite difieren.
+  - Creación de [DialogReinicioExitosoDb.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogReinicioExitosoDb.kt): modal de confirmación con CTA destacado de reinicio guiado.
+  - Creación de [DialogOpcionesBackup.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/DialogOpcionesBackup.kt): selector modal cálido entre exportar e importar base de datos.
+  - Creación de [BackupDialogsContainer.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/components/backup/BackupDialogsContainer.kt): contenedor de orquestación visual y de launchers SAF (`CreateDocument` / `OpenDocument`).
+  - Integración en [LoginScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/presentation/login/LoginScreen.kt) (botón de acción superior con icono SwapHoriz) y [AppNavigation.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/presentation/navigation/AppNavigation.kt).
+  - Integración en [ConfiguracionScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/ConfiguracionScreen.kt) con la Card 6 de "Transferencia y Respaldo de Datos (SQLite)".
+
+- [x] **Fase 5: Aseguramiento de Calidad y Suite Completa (🏆 `quality-pm-expert`)**
+  - Pruebas unitarias de caso de uso en [BackupUseCaseTest.kt](file:///d:/TortilleriaDerek/app/src/test/java/com/example/tortilleriaderek/domain/usecase/BackupUseCaseTest.kt) (19 pruebas en verde).
+  - Pruebas unitarias de presentación en [BackupViewModelTest.kt](file:///d:/TortilleriaDerek/app/src/test/java/com/example/tortilleriaderek/presentation/backup/BackupViewModelTest.kt) (9 pruebas en verde).
+  - Verificación de compilación Kotlin con `./gradlew compileDebugKotlin` (**BUILD SUCCESSFUL** sin advertencias).
+  - Verificación de la suite completa con `./gradlew testDebugUnitTest` (**BUILD SUCCESSFUL en 3m 28s**, 100% pruebas pasando).
+
+**Estado actual:** Feature de Backup y Transferencia de Datos entre Teléfonos (Opción 1 — SQLite Directo) completamente implementada, verificada y certificada con pruebas automatizadas.
+
+---
+
+## Feature Actual: Plan de Mejora y Mitigación de Auditoría Técnica
+**Spec:** `docs/features/plan_mejora_audit_sdd.md`
+
+### Checklist de Implementación SDD
+- [x] **Fase 1: Especificación y Criterios (Inception)**
+  - Redacción y validación de `docs/features/plan_mejora_audit_sdd.md` (Historias de usuario US-01 a US-03, casos límite y criterios de aceptación).
+  - Criterios de seguridad (🛡️ `security-expert`): exclusión de base de datos local y SharedPreferences sensibles en `backup_rules.xml` y `data_extraction_rules.xml`.
+  - Validación QA y SDD Gate (🏆 `quality-pm-expert`).
+- [x] **Fase 2: Persistencia y Migraciones Room (🏗️ `mobile-developer`)**
+  - Implementación de `exportSchema = true` en `TortilleriaDatabase` con esquema JSON v7 generado por KSP.
+  - Creación de [Migrations.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/data/local/migration/Migrations.kt) con soporte robusto e idempotente para saltos v1..v6 -> v7 con `ALL_MIGRATIONS`.
+  - Configuración e inyección segura en `DataModule` (`.addMigrations(*Migrations.ALL_MIGRATIONS)`).
+  - Creación de suite automatizada [MigrationsTest.kt](file:///d:/TortilleriaDerek/app/src/test/java/com/example/tortilleriaderek/data/local/migration/MigrationsTest.kt) validando la integridad del DDL sin pérdida de datos.
+- [x] **Fase 3: Seguridad en Respaldos y Extracción de Datos (🛡️ `security-expert` + 🏗️ `mobile-developer`)**
+  - Actualización de `backup_rules.xml` para excluir la base de datos local del respaldo cloud automático.
+  - Actualización de `data_extraction_rules.xml` para control estricto de extracción.
+- [x] **Fase 4: Modularización de ConfiguracionScreen (🎨 `design-ui-expert` + 🏗️ `mobile-developer`)**
+  - Descomposición de [ConfiguracionScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/ConfiguracionScreen.kt) de 2,000 líneas a 400 líneas (cumpliendo estrictamente el Artículo III de la Constitución).
+  - Creación de 11 subcomponentes stateless puros en `ui/components/configuracion/`:
+    - `CardPreciosProductos.kt`
+    - `CardEstandaresProduccion.kt`
+    - `CardGestionRepartidores.kt`
+    - `CardGestionUsuarios.kt`
+    - `CardRespaldoTransferenciaDb.kt`
+    - `ConfiguracionHeader.kt`
+    - `ConfiguracionDialogsContainer.kt`
+    - Diálogos modales: `DialogEditarProducto.kt`, `DialogAgregarRepartidor.kt`, `DialogsUsuarioCrud.kt`, `DialogConfirmacionAdmin1.kt`, `DialogEditarEstandaresProduccion.kt`, `DialogAvisoSeguridad.kt`.
+- [x] **Fase 5: Aseguramiento de Calidad y Suite Completa (🏆 `quality-pm-expert`)**
+  - 110 pruebas unitarias ejecutadas al 100% en verde con `./gradlew testDebugUnitTest` (0 fallos, 0 errores).
+  - Scripts de auditoría automatizados (`check_design.ps1`, `audit_quality.ps1`) operativos.
+
+---
+
+## 🚀 Próximas Pantallas para Modularización y Erradicación de Strings Hardcodeados:
+1. **[HistorialScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/HistorialScreen.kt)** (643 lín. -> objetivo < 350 lín.)
+2. **[ProduccionScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/ProduccionScreen.kt)** (706 lín. -> objetivo < 350 lín.)
+3. **[RepartidoresScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/RepartidoresScreen.kt)** (709 lín. -> objetivo < 350 lín.)
+4. **[MostradorScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/MostradorScreen.kt)** (931 lín. -> objetivo < 350 lín.)
+5. **[MetricasScreen.kt](file:///d:/TortilleriaDerek/app/src/main/java/com/example/tortilleriaderek/ui/screens/MetricasScreen.kt)** (1127 lín. -> objetivo < 350 lín.)
+6. **Externalización masiva de strings UI a `res/values/strings.xml`** (227 literales detectados por `check_design.ps1`).
+
+---
+
+## 🏛️ Hito Constitucional: Adopción del Modo de Diseño y Sistema de Agentes 2.0
+- [x] **Constitución Maestra de Agentes:** Creación de [AGENTS.md](file:///d:/TortilleriaDerek/AGENTS.md) con los 6 Artículos Inviolables de ingeniería (Offline-First, Cero Hardcoding, Anti-God Composables < 400 lín., Clean Architecture, Migraciones Seguras, Ergonomía Táctil de Tortillería).
+- [x] **Workflow del Modo de Diseño:** Creación de [.agents/workflows/design_mode_workflow.md](file:///d:/TortilleriaDerek/.agents/workflows/design_mode_workflow.md) con procedimiento en 6 pasos para maquetar interfaces stateless con `@Preview` multi-dispositivo y fidelidad al diseño de Stitch.
+- [x] **Orquestador SDD Maestro:** Creación de [.agents/workflows/sdd_orchestrator.md](file:///d:/TortilleriaDerek/.agents/workflows/sdd_orchestrator.md) coordinando las 5 fases de desarrollo.
+- [x] **Ecosistema de Skills Especializados:**
+  - [design-expert-skill/SKILL.md](file:///d:/TortilleriaDerek/.agents/skills/design-expert-skill/SKILL.md) + `check_design.ps1` (Tokens Maíz & Masa, ergonomía táctil 56-64dp, números tabulares `tnum`).
+  - [mobile-developer-skill/SKILL.md](file:///d:/TortilleriaDerek/.agents/skills/mobile-developer-skill/SKILL.md) + `audit_arch.ps1` (Fronteras Clean Architecture, Room y MVI).
+  - [quality-pm-expert-skill/SKILL.md](file:///d:/TortilleriaDerek/.agents/skills/quality-pm-expert-skill/SKILL.md) + `audit_quality.ps1` (DoD y verificación).
+  - [security-expert-skill/SKILL.md](file:///d:/TortilleriaDerek/.agents/skills/security-expert-skill/SKILL.md) (Criptografía PBKDF2 y SAF).
+- [x] **Actualización de Guardrails y Agentes:** Refuerzo de [.agents/rules/general_rules.md](file:///d:/TortilleriaDerek/.agents/rules/general_rules.md), [.agents/rules/orchestration_contract.md](file:///d:/TortilleriaDerek/.agents/rules/orchestration_contract.md) y [.agents/agents/design-ui-expert.md](file:///d:/TortilleriaDerek/.agents/agents/design-ui-expert.md).
+
+
+
+
+
