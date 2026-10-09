@@ -3,6 +3,7 @@ package com.example.tortilleriaderek.data.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.tortilleriaderek.data.local.TortilleriaDatabase
 import com.example.tortilleriaderek.data.local.dao.TurnoDao
@@ -37,7 +38,7 @@ object DataModule {
             context,
             TortilleriaDatabase::class.java,
             "tortilleria_db"
-        ).fallbackToDestructiveMigration()
+        ).addMigrations(*com.example.tortilleriaderek.data.local.migration.Migrations.ALL_MIGRATIONS)
         .addCallback(object : RoomDatabase.Callback() {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
@@ -83,4 +84,16 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindBackupStoragePort(
+        backupStoragePortImpl: com.example.tortilleriaderek.data.repository.BackupStoragePortImpl
+    ): com.example.tortilleriaderek.domain.repository.BackupStoragePort
+
+    @Binds
+    @Singleton
+    abstract fun bindBatteryStatusProvider(
+        defaultBatteryStatusProvider: com.example.tortilleriaderek.data.system.DefaultBatteryStatusProvider
+    ): com.example.tortilleriaderek.domain.model.BatteryStatusProvider
 }

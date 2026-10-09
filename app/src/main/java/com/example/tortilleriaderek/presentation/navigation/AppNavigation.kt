@@ -74,6 +74,7 @@ fun AppNavigation(
                 composable<Screen.Login> {
                     val viewModel = hiltViewModel<LoginViewModel>()
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+                    val backupViewModel = hiltViewModel<com.example.tortilleriaderek.presentation.backup.BackupViewModel>()
 
                     LaunchedEffect(Unit) {
                         viewModel.effect.collect { effect ->
@@ -98,7 +99,25 @@ fun AppNavigation(
 
                     LoginScreenContent(
                         uiState = uiState,
-                        onEvent = viewModel::onEvent
+                        onEvent = viewModel::onEvent,
+                        onExportarBackup = {
+                            backupViewModel.onIntent(
+                                com.example.tortilleriaderek.presentation.backup.BackupUiIntent.IniciarExportacion(
+                                    esAdminLogueado = false
+                                )
+                            )
+                        },
+                        onImportarBackup = {
+                            backupViewModel.onIntent(
+                                com.example.tortilleriaderek.presentation.backup.BackupUiIntent.IniciarImportacion(
+                                    esAdminLogueado = false
+                                )
+                            )
+                        }
+                    )
+
+                    com.example.tortilleriaderek.ui.components.backup.BackupDialogsContainer(
+                        viewModel = backupViewModel
                     )
                 }
 

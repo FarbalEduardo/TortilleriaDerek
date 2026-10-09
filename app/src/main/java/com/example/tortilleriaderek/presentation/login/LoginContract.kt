@@ -32,6 +32,7 @@ sealed interface LoginUiEvent {
     object OnAbrirTurnoClick : LoginUiEvent
     object OnSoloConsultaClick : LoginUiEvent
     object OnSettingsClick : LoginUiEvent
+    object OnBackupClick : LoginUiEvent
 }
 
 sealed interface LoginUiEffect {

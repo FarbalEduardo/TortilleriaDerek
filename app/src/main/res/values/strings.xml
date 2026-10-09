@@ -1,3 +1,157 @@
 <resources>
-    <string name="app_name">Tortilleria Derek</string>
+    <!-- General & App -->
+    <string name="app_name">Tortillería Derek</string>
+    <string name="btn_cancelar">Cancelar</string>
+    <string name="btn_aceptar">Aceptar</string>
+    <string name="btn_confirmar">Confirmar</string>
+    <string name="btn_guardar">Guardar</string>
+    <string name="btn_eliminar">Eliminar</string>
+    <string name="btn_cerrar">Cerrar</string>
+    <string name="btn_salir">Salir ➔</string>
+    <string name="txt_disminuir">Disminuir</string>
+    <string name="txt_aumentar">Aumentar</string>
+    <string name="txt_calendario">Calendario</string>
+    <string name="txt_opciones">Opciones</string>
+    <string name="txt_volver">Volver</string>
+
+    <!-- Navegación Inferior -->
+    <string name="nav_venta">Venta</string>
+    <string name="nav_produccion">Producción</string>
+    <string name="nav_metricas">Métricas</string>
+    <string name="nav_configuracion">Configuración</string>
+    <string name="nav_ajustes">Ajustes</string>
+    <string name="nav_historial">Historial</string>
+
+    <!-- Header Ventas / Turno -->
+    <string name="header_turno_actual">Turno Actual</string>
+    <string name="header_scope_dia">Día Completo</string>
+    <string name="header_scope_turno">Turno</string>
+    <string name="header_cerrar_turno">Cerrar Turno</string>
+
+    <!-- Pestañas Mostrador / Reparto -->
+    <string name="tab_mostrador">Mostrador</string>
+    <string name="tab_reparto_mayoreo">Reparto Mayoreo</string>
+
+    <!-- Mostrador -->
+    <string name="mostrador_registro_titulo">Registro de Mostrador</string>
+    <string name="mostrador_ticket_prefix">Ticket: %1$s</string>
+    <string name="mostrador_subtotal">Subtotal</string>
+    <string name="mostrador_btn_ingresar_venta">Ingresar venta</string>
+    <string name="mostrador_cobrar_efectivo">Cobrar en Efectivo</string>
+    <string name="mostrador_ver_historial">Historial de Ventas</string>
+    <string name="dialog_confirmar_venta_titulo">Confirmar Venta Mostrador</string>
+    <string name="dialog_confirmar_venta_contado">De Contado</string>
+    <string name="dialog_confirmar_venta_total_a_cobrar">TOTAL A COBRAR</string>
+    <string name="dialog_confirmar_venta_articulos">Artículos en orden:</string>
+    <string name="dialog_confirmar_venta_btn_confirmar">Confirmar e Imprimir Ticket</string>
+
+    <!-- Diálogo Cerrar Turno -->
+    <string name="dialog_cerrar_turno_titulo_rutas_activas">¡Rutas Activas en Calle!</string>
+    <string name="dialog_cerrar_turno_titulo_normal">¿Cerrar Turno Actual?</string>
+    <string name="dialog_cerrar_turno_rutas_advertencia">No se puede cerrar turno mientras existan rutas activas en la calle:</string>
+    <string name="dialog_cerrar_turno_rutas_instruccion">Por favor, liquida o da por terminada cada ruta en la pestaña de Repartidores antes de proceder con el corte de caja.</string>
+    <string name="dialog_cerrar_turno_confirmacion_mensaje">Se realizará el corte de caja y se consolidará el total de ventas acumuladas (%1$s MXN) en Room. Una vez cerrado el turno ya no se podrán modificar ni registrar nuevas ventas.</string>
+    <string name="dialog_cerrar_turno_btn_bloqueado">Liquidación Pendiente</string>
+    <string name="dialog_cerrar_turno_btn_confirmar">Confirmar y Salir</string>
+
+    <!-- Repartidores -->
+    <string name="repartidores_titulo">Rutas de Reparto Mayoreo</string>
+    <string name="repartidores_btn_salida">Salida a Ruta</string>
+    <string name="repartidores_btn_liquidar">Liquidar</string>
+    <string name="repartidores_btn_ver_detalle">Ver Detalle</string>
+    <string name="repartidores_btn_cancelar_salida">Cancelar Salida</string>
+    <string name="repartidores_estado_disponible">Disponible</string>
+    <string name="repartidores_estado_en_ruta">En Ruta</string>
+    <string name="repartidores_estado_liquidado">Liquidado</string>
+    <string name="dialog_salida_repartidor_titulo">Salida a Ruta de Reparto</string>
+    <string name="dialog_liquidar_repartidor_titulo">Liquidación de Ruta</string>
+    <string name="dialog_detalle_liquidacion_titulo">Detalle de Liquidación • %1$s</string>
+    <string name="repartidores_lbl_kilos_en_ruta">%1$.1f kg en ruta</string>
+    <string name="repartidores_lbl_kilos_entregados">Kilos entregados/vendidos: %1$.1f kg</string>
+    <string name="repartidores_lbl_kilos_devueltos">Kilos devueltos: %1$.1f kg</string>
+    <string name="repartidores_lbl_total_liquidado">Total liquidado en caja: %1$s MXN</string>
+
+    <!-- Producción -->
+    <string name="produccion_titulo">Control de Producción</string>
+    <string name="produccion_hero_subtitulo">Producción Acumulada</string>
+    <string name="produccion_tanda_rapida">Registro Rápido de Tanda</string>
+    <string name="produccion_btn_registrar_tanda">Registrar Tanda</string>
+    <string name="produccion_btn_registrar_merma">Registrar Merma</string>
+    <string name="produccion_dialog_merma_titulo">Registro de Merma / Desperdicio</string>
+    <string name="produccion_dialog_merma_motivo">Motivo de merma</string>
+    <string name="produccion_dialog_merma_cantidad">Cantidad (kg)</string>
+    <string name="produccion_harina_utilizada">Harina Utilizada</string>
+    <string name="produccion_merma_total">Merma Total</string>
+    <string name="produccion_rendimiento_promedio">Rendimiento Promedio</string>
+
+    <!-- Historial -->
+    <string name="historial_titulo">Historial y Auditoría</string>
+    <string name="historial_resumen_recaudacion">Recaudación Consolidada</string>
+    <string name="historial_filtro_todas">Todas</string>
+    <string name="historial_filtro_mostrador">Mostrador</string>
+    <string name="historial_filtro_repartidores">Repartidores</string>
+    <string name="historial_empty_state">No hay registros para este período o filtro seleccionado.</string>
+    <string name="historial_dialog_eliminar_titulo">¿Eliminar Transacción?</string>
+    <string name="historial_dialog_eliminar_mensaje">Esta acción revertirá los montos y dejará registro en la bitácora de auditoría.</string>
+
+    <!-- Métricas -->
+    <string name="metricas_titulo_1">Productividad y</string>
+    <string name="metricas_titulo_2">Ventas</string>
+    <string name="metricas_seleccionar_rango">Seleccionar rango</string>
+    <string name="metricas_modo_consulta">Modo Solo Consulta (Solo Lectura)</string>
+    <string name="metricas_comportamiento_titulo">COMPORTAMIENTO DEL PERIODO (TURNOS CERRADOS)</string>
+    <string name="metricas_distribucion_canales">Distribución de Canales</string>
+    <string name="metricas_promedio_diario">Promedio Diario</string>
+    <string name="metricas_merma_promedio">Merma Promedio</string>
+    <string name="metricas_ritmo_optimo">Ritmo óptimo</string>
+    <string name="metricas_merma_optima">(Óptimo)</string>
+    <string name="metricas_merma_elevada">(Elevada)</string>
+    <string name="metricas_merma_meta">Meta: menor a 5.0%</string>
+    <string name="metricas_dialog_rango_fechas">Seleccionar Rango Personalizado (Máx. 30 días)</string>
+    <string name="metricas_error_max_dias">No se permiten más de 30 días</string>
+    <string name="metricas_inicio_seleccionado">Inicio seleccionado. Ahora selecciona la fecha final (máx. 30 días).</string>
+
+    <!-- Configuración -->
+    <string name="config_titulo">Configuración del Sistema</string>
+    <string name="config_perfil_negocio">Perfil del Negocio</string>
+    <string name="config_precios_productos">Precios y Productos</string>
+    <string name="config_turnos_horarios">Turnos y Horarios</string>
+    <string name="config_seguridad_pin">Seguridad y PIN de Acceso</string>
+    <string name="config_respaldo_seguridad">Respaldo y Seguridad</string>
+    <string name="config_impresora_tickets">Impresora y Tickets</string>
+
+    <!-- Configuración Adicional & Cards -->
+    <string name="config_header_titulo">Configuración del Sistema</string>
+    <string name="config_header_subtitulo">Parámetros operativos y catálogo activo</string>
+    <string name="config_btn_regresar_login">Regresar al Login</string>
+    <string name="config_activos_conteo">%1$d activos</string>
+    <string name="config_btn_editar_item">Editar %1$s</string>
+    <string name="config_btn_eliminar_item">Eliminar %1$s</string>
+
+    <string name="config_precios_titulo">Precios y Pesos de Productos</string>
+    <string name="config_precios_subtitulo">Mostrador y venta mayoreo</string>
+
+    <string name="config_estandares_titulo">Estándares de Producción</string>
+    <string name="config_estandares_subtitulo">Rendimiento de harina, masa y merma</string>
+    <string name="config_estandares_btn_editar">Ajustar Parámetros</string>
+    <string name="config_estandares_bulto_harina">Bulto de Harina</string>
+    <string name="config_estandares_masa_bulto">Masa por Bulto</string>
+    <string name="config_estandares_rendimiento">Rendimiento Tortilla</string>
+    <string name="config_estandares_merma_tolerada">Merma Tolerada</string>
+
+    <string name="config_repartidores_titulo">Gestión de Repartidores</string>
+    <string name="config_repartidores_subtitulo">Personal y motos de reparto activo</string>
+    <string name="config_repartidores_btn_agregar">Nuevo Repartidor</string>
+    <string name="config_repartidores_empty">No hay repartidores registrados.</string>
+
+    <string name="config_usuarios_titulo">Gestión de Usuarios</string>
+    <string name="config_usuarios_subtitulo">Accesos de administrador y cajeros</string>
+    <string name="config_usuarios_btn_agregar">Nuevo Usuario</string>
+    <string name="config_usuarios_rol_admin">ADMINISTRADOR</string>
+    <string name="config_usuarios_rol_empleado">EMPLEADO</string>
+
+    <string name="config_respaldo_titulo">Copia de Seguridad y Transferencia Local</string>
+    <string name="config_respaldo_subtitulo">Exportación e importación segura de base de datos SQLite</string>
+    <string name="config_respaldo_btn_exportar">Exportar Base de Datos</string>
+    <string name="config_respaldo_btn_importar">Importar Base de Datos</string>
 </resources>

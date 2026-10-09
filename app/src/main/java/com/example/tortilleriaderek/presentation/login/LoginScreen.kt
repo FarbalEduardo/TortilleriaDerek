@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PointOfSale
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -72,23 +73,43 @@ private val NeutralIconTint = Color(0xFF524E4A)
 fun LoginScreenContent(
     uiState: LoginUiState,
     onEvent: (LoginUiEvent) -> Unit,
+    onExportarBackup: () -> Unit = {},
+    onImportarBackup: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var showBackupOptionsDialog by remember { mutableStateOf(false) }
+
+    if (showBackupOptionsDialog) {
+        com.example.tortilleriaderek.ui.components.backup.DialogOpcionesBackup(
+            onExportar = {
+                showBackupOptionsDialog = false
+                onExportarBackup()
+            },
+            onImportar = {
+                showBackupOptionsDialog = false
+                onImportarBackup()
+            },
+            onDismiss = { showBackupOptionsDialog = false }
+        )
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(NeutralBg),
         contentAlignment = Alignment.TopCenter
     ) {
-        // Botón visible de Ajustes en esquina superior derecha con statusBarsPadding y zIndex (US6)
-        Row(
+        // Botones de acción en esquina superior derecha alineados de forma vertical
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .align(Alignment.TopEnd)
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .padding(end = 20.dp, top = 12.dp)
                 .zIndex(20f),
-            horizontalArrangement = Arrangement.End
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
+            // Botón visible de Ajustes
             Surface(
                 shape = CircleShape,
                 color = Color.White,
@@ -107,6 +128,29 @@ fun LoginScreenContent(
                         contentDescription = "Ajustes",
                         tint = NeutralIconTint,
                         modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
+
+            // Botón Transferir o Respaldar Datos SQLite
+            Surface(
+                shape = CircleShape,
+                color = Color.White,
+                border = BorderStroke(1.dp, NeutralBorderSubtle),
+                shadowElevation = 2.dp,
+                modifier = Modifier.size(44.dp)
+            ) {
+                IconButton(
+                    onClick = { showBackupOptionsDialog = true },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .testTag("login_backup_button")
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.SwapHoriz,
+                        contentDescription = "Transferir o Respaldar Datos",
+                        tint = NeutralIconTint,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
