@@ -1,6 +1,7 @@
 <resources>
     <!-- General & App -->
     <string name="app_name">Tortillería Derek</string>
+    <string name="login_desarrollada_por">Desarrollada por </string>
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
     <string name="btn_confirmar">Confirmar</string>

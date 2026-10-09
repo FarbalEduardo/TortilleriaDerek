@@ -137,6 +137,17 @@ class BackupViewModel @Inject constructor(
                 }
             }
 
+            if (usuarioDao.countAdmins() == 0) {
+                _uiState.update {
+                    it.copy(
+                        operacionPendiente = OperacionBackup.IMPORTAR,
+                        errorAutenticacionAdmin = null
+                    )
+                }
+                _uiEffect.send(BackupUiEffect.AbrirSelectorLeer)
+                return@launch
+            }
+
             _uiState.update {
                 it.copy(
                     mostrarDialogoAutenticacionAdmin = true,

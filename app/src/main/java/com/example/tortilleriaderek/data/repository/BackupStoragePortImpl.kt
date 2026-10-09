@@ -92,20 +92,24 @@ class BackupStoragePortImpl @Inject constructor(
     }
 
     override suspend fun inspeccionarDbDesdeOrigen(uriString: String): Result<DbInspectionResult> = withContext(Dispatchers.IO) {
-        val tempFile = File(context.cacheDir, "temp_inspect_${System.currentTimeMillis()}.db")
+        val stagingFile = File(context.cacheDir, "staged_backup_import.db")
         try {
             val uri = Uri.parse(uriString)
             context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(tempFile).use { output ->
+                FileOutputStream(stagingFile).use { output ->
                     input.copyTo(output)
                 }
             } ?: return@withContext Result.failure(BackupError.ArchivoInvalido)
 
             val sqlite = try {
-                SQLiteDatabase.openDatabase(tempFile.path, null, SQLiteDatabase.OPEN_READONLY)
-            } catch (e: Exception) {
-                tempFile.delete()
-                return@withContext Result.failure(BackupError.ArchivoInvalido)
+                SQLiteDatabase.openDatabase(stagingFile.path, null, SQLiteDatabase.OPEN_READWRITE)
+            } catch (_: Exception) {
+                try {
+                    SQLiteDatabase.openDatabase(stagingFile.path, null, SQLiteDatabase.OPEN_READONLY)
+                } catch (e: Exception) {
+                    stagingFile.delete()
+                    return@withContext Result.failure(BackupError.ArchivoInvalido)
+                }
             }
 
             var userVersion = 0
@@ -142,7 +146,6 @@ class BackupStoragePortImpl @Inject constructor(
             } catch (_: Exception) {}
 
             sqlite.close()
-            tempFile.delete()
 
             Result.success(
                 DbInspectionResult(
@@ -156,7 +159,7 @@ class BackupStoragePortImpl @Inject constructor(
                 )
             )
         } catch (e: Exception) {
-            tempFile.delete()
+            stagingFile.delete()
             Result.failure(BackupError.ErrorDesconocido(e))
         }
     }
@@ -166,7 +169,9 @@ class BackupStoragePortImpl @Inject constructor(
         politicaPassword: PoliticaPasswordAdmin
     ): Result<Unit> = withContext(Dispatchers.IO) {
         val dbFile = context.getDatabasePath("tortilleria_db")
+        dbFile.parentFile?.let { if (!it.exists()) it.mkdirs() }
         val prevFile = File(dbFile.parentFile, "tortilleria_db.prev")
+        val stagingFile = File(context.cacheDir, "staged_backup_import.db")
 
         // 1. Snapshot de rollback previo
         if (dbFile.exists()) {
@@ -179,13 +184,18 @@ class BackupStoragePortImpl @Inject constructor(
         } catch (_: Exception) {}
 
         try {
-            // 3. Escribir archivo de respaldo sobre la ruta oficial
-            val uri = Uri.parse(uriString)
-            context.contentResolver.openInputStream(uri)?.use { input ->
-                FileOutputStream(dbFile).use { output ->
-                    input.copyTo(output)
-                }
-            } ?: throw BackupError.ErrorEscritura
+            // 3. Escribir archivo de respaldo sobre la ruta oficial (desde staging o URI directa)
+            if (stagingFile.exists() && stagingFile.length() > 0) {
+                stagingFile.copyTo(dbFile, overwrite = true)
+                stagingFile.delete()
+            } else {
+                val uri = Uri.parse(uriString)
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    FileOutputStream(dbFile).use { output ->
+                        input.copyTo(output)
+                    }
+                } ?: throw BackupError.ErrorEscritura
+            }
 
             // 4. Limpiar archivos efímeros WAL y SHM
             val walFile = File(dbFile.parentFile, "tortilleria_db-wal")

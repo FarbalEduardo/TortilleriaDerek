@@ -37,6 +37,12 @@ fun BackupDialogsContainer(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri: Uri? ->
         uri?.let {
+            try {
+                context.contentResolver.takePersistableUriPermission(
+                    it,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (_: Exception) {}
             viewModel.onIntent(BackupUiIntent.OnUriOrigenSeleccionadaImportar(it.toString()))
         }
     }
@@ -66,8 +72,10 @@ fun BackupDialogsContainer(
                         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         context.startActivity(launchIntent)
                         (context as? Activity)?.finishAffinity()
-                        android.os.Process.killProcess(android.os.Process.myPid())
-                        kotlin.system.exitProcess(0)
+                        kotlin.concurrent.thread {
+                            try { Thread.sleep(300) } catch (_: Exception) {}
+                            Runtime.getRuntime().exit(0)
+                        }
                     }
                 }
                 is BackupUiEffect.ShowToast -> {

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- General & App (English) -->
+    <string name="app_name">Tortillería Derek</string>
+    <string name="login_desarrollada_por">Developed by </string>
+</resources>

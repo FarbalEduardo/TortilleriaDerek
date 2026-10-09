@@ -41,9 +41,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import com.example.tortilleriaderek.R
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.zIndex
@@ -430,14 +432,14 @@ fun LoginScreenContent(
                     .fillMaxWidth()
                     .padding(top = 28.dp, bottom = 12.dp)
             ) {
-                // Powered by FarbalApps
+                // Desarrollada por FarbalApps
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.padding(bottom = 6.dp)
                 ) {
                     Text(
-                        text = "powered by ",
+                        text = stringResource(R.string.login_desarrollada_por),
                         fontSize = 11.sp,
                         color = Color(0xFFA39E99),
                         fontWeight = FontWeight.Normal
