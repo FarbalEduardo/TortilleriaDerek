@@ -33,8 +33,8 @@ private val NeutralBody = Color(0xFF736E69)
 
 /**
  * Creado por 🎨 design-ui-expert y 🛡️ security-expert.
- * Keypad táctil numérico industrial (Artículo VI de la Constitución: Touch targets 64dp y cifras tabulares tnum).
- * Diseñado para operar en mostrador de tortillería con dedos enharinados o húmedos.
+ * Keypad táctil numérico industrial ergonómico (58dp, Artículo VI de la Constitución: 56-64dp).
+ * Diseñado para adaptarse verticalmente sin forzar scroll en la pantalla de Login.
  */
 @Composable
 fun KeypadNumericoLogin(
@@ -60,7 +60,7 @@ fun KeypadNumericoLogin(
             horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .padding(vertical = 12.dp)
+                .padding(vertical = 8.dp)
                 .testTag("keypad_pin_dots")
         ) {
             for (i in 0 until 4) {
@@ -72,7 +72,7 @@ fun KeypadNumericoLogin(
                 )
                 Box(
                     modifier = Modifier
-                        .size(16.dp)
+                        .size(15.dp)
                         .clip(CircleShape)
                         .background(dotColor)
                         .border(1.5.dp, if (isFilled) BrandOrange else Color(0xFFCCC7C2), CircleShape)
@@ -84,16 +84,14 @@ fun KeypadNumericoLogin(
             Text(
                 text = stringResource(R.string.login_bloqueo_aviso, segundosRestantes),
                 color = MaterialTheme.colorScheme.error,
-                fontSize = 12.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 6.dp)
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Filas del Teclado Numérico (64dp touch target conforme a la Constitución)
+        // Filas del Teclado Numérico
         val filas = listOf(
             listOf("1", "2", "3"),
             listOf("4", "5", "6"),
@@ -102,9 +100,9 @@ fun KeypadNumericoLogin(
 
         for (fila in filas) {
             Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalArrangement = Arrangement.spacedBy(14.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 5.dp)
+                modifier = Modifier.padding(vertical = 4.dp)
             ) {
                 for (digito in fila) {
                     BotonDigitoKeypad(
@@ -118,9 +116,9 @@ fun KeypadNumericoLogin(
 
         // Fila Inferior: Biometría / Vacío | "0" | Borrar
         Row(
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(vertical = 5.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         ) {
             // Botón Biometría o Espaciador
             if (tieneBiometria) {
@@ -129,7 +127,7 @@ fun KeypadNumericoLogin(
                     color = BrandOrangeLight,
                     border = androidx.compose.foundation.BorderStroke(1.dp, BrandOrange.copy(alpha = 0.4f)),
                     modifier = Modifier
-                        .size(64.dp)
+                        .size(58.dp)
                         .clip(CircleShape)
                         .clickable(enabled = !bloqueado, onClick = onBiometriaClick)
                         .testTag("keypad_btn_biometria")
@@ -139,12 +137,12 @@ fun KeypadNumericoLogin(
                             imageVector = Icons.Default.Fingerprint,
                             contentDescription = stringResource(R.string.login_btn_biometria_desc),
                             tint = BrandOrange,
-                            modifier = Modifier.size(30.dp)
+                            modifier = Modifier.size(28.dp)
                         )
                     }
                 }
             } else {
-                Spacer(modifier = Modifier.size(64.dp))
+                Spacer(modifier = Modifier.size(58.dp))
             }
 
             // Dígito "0"
@@ -161,7 +159,7 @@ fun KeypadNumericoLogin(
                 border = androidx.compose.foundation.BorderStroke(1.dp, NeutralBorderSubtle),
                 shadowElevation = 1.dp,
                 modifier = Modifier
-                    .size(64.dp)
+                    .size(58.dp)
                     .clip(CircleShape)
                     .clickable(enabled = !bloqueado && pinLength > 0, onClick = onBorrarClick)
                     .testTag("keypad_btn_backspace")
@@ -171,13 +169,13 @@ fun KeypadNumericoLogin(
                         imageVector = Icons.AutoMirrored.Filled.Backspace,
                         contentDescription = "Borrar",
                         tint = if (pinLength > 0) NeutralTitle else NeutralBody.copy(alpha = 0.4f),
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(22.dp)
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         // Enlace táctil de recuperación con Clave Maestra
         Text(
@@ -189,7 +187,7 @@ fun KeypadNumericoLogin(
             modifier = Modifier
                 .clip(CircleShape)
                 .clickable { onOlvidastePinClick() }
-                .padding(horizontal = 12.dp, vertical = 6.dp)
+                .padding(horizontal = 12.dp, vertical = 4.dp)
                 .testTag("login_enlace_master_key")
         )
     }
@@ -207,7 +205,7 @@ private fun BotonDigitoKeypad(
         border = androidx.compose.foundation.BorderStroke(1.dp, NeutralBorderSubtle),
         shadowElevation = if (enabled) 2.dp else 0.dp,
         modifier = Modifier
-            .size(64.dp) // Touch target ergonómico de 64dp (Artículo VI)
+            .size(58.dp)
             .clip(CircleShape)
             .clickable(enabled = enabled, onClick = onClick)
             .testTag("keypad_digito_$digito")
@@ -215,11 +213,11 @@ private fun BotonDigitoKeypad(
         Box(contentAlignment = Alignment.Center) {
             Text(
                 text = digito,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 color = if (enabled) NeutralTitle else NeutralBody.copy(alpha = 0.4f),
                 style = LocalTextStyle.current.copy(
-                    fontFeatureSettings = "tnum" // Cifras tabulares tnum
+                    fontFeatureSettings = "tnum"
                 )
             )
         }

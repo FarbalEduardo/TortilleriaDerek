@@ -66,7 +66,7 @@ class LoginViewModelTest {
         viewModel.uiState.test {
             // Estado inicial
             val estadoInicial = awaitItem()
-            assertEquals("", estadoInicial.usernameInput)
+            assertEquals("admin1", estadoInicial.usernameInput)
             assertEquals("", estadoInicial.passwordInput)
 
             // Evento

@@ -182,4 +182,10 @@
     <string name="dialog_recuperacion_error_no_coinciden">Los PINs ingresados no coinciden.</string>
     <string name="dialog_recuperacion_error_longitud">El PIN debe contener al menos 4 números.</string>
     <string name="dialog_recuperacion_error_clave_invalida">La Clave Maestra de Rescate es incorrecta.</string>
+
+    <string name="login_label_operador">Operador / Usuario</string>
+    <string name="login_operador_hint">Escribe el usuario (ej. admin1)</string>
+    <string name="login_limpiar_operador">Limpiar campo de usuario</string>
+    <string name="biometria_no_huellas_registradas">No hay huellas registradas en el dispositivo. Configúralas en Ajustes de Android o usa tu PIN.</string>
+    <string name="biometria_no_hardware">Este dispositivo no cuenta con sensor biométrico.</string>
 </resources>

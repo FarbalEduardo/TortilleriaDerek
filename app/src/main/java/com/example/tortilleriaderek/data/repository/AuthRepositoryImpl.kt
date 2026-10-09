@@ -54,7 +54,7 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun loginConPin(pinRaw: String): Result<Usuario> {
+    override suspend fun loginConPin(pinRaw: String, username: String?): Result<Usuario> {
         return try {
             val config = obtenerOInicializarSeguridadConfig()
             if (config.estaBloqueadoTemporalmente) {
@@ -65,16 +65,57 @@ class AuthRepositoryImpl @Inject constructor(
 
             seedDefaultUsersIfEmpty()
             val cleanPin = pinRaw.trim()
+            val cleanUser = username?.trim()
             val usuarios = usuarioDao.getAllUsuariosSync()
 
             if (usuarios.isEmpty()) {
                 return Result.failure(Exception("No existen usuarios registrados en el sistema."))
             }
 
-            // Validar contra usuarios existentes (preferencia al Admin si coincide o único usuario)
-            val usuarioCoincidente = usuarios.firstOrNull { u ->
-                val hash = CryptoManager.hashPassword(cleanPin, u.salt)
-                hash == u.passwordHash
+            var usuarioCoincidente: UsuarioEntity? = null
+
+            // 1. Si se especificó un usuario, validar contra ese usuario específico
+            if (!cleanUser.isNullOrBlank()) {
+                val usuarioEspecifico = usuarios.firstOrNull { it.username.equals(cleanUser, ignoreCase = true) }
+                if (usuarioEspecifico != null) {
+                    val hash = CryptoManager.hashPassword(cleanPin, usuarioEspecifico.salt)
+                    if (hash == usuarioEspecifico.passwordHash) {
+                        usuarioCoincidente = usuarioEspecifico
+                    } else if (cleanPin == "1234" && usuarioEspecifico.rol == "ADMIN") {
+                        // Fallback de migración: Si el admin tenía "admin123", aceptamos "1234"
+                        val legacyHash = CryptoManager.hashPassword("admin123", usuarioEspecifico.salt)
+                        if (legacyHash == usuarioEspecifico.passwordHash) {
+                            val newSalt = CryptoManager.generateSalt()
+                            val newHash = CryptoManager.hashPassword("1234", newSalt)
+                            val adminActualizado = usuarioEspecifico.copy(passwordHash = newHash, salt = newSalt)
+                            usuarioDao.updateUsuario(adminActualizado)
+                            usuarioCoincidente = adminActualizado
+                        }
+                    }
+                }
+            }
+
+            // 2. Si no se especificó o no se encontró, validar globalmente contra usuarios existentes
+            if (usuarioCoincidente == null) {
+                usuarioCoincidente = usuarios.firstOrNull { u ->
+                    val hash = CryptoManager.hashPassword(cleanPin, u.salt)
+                    hash == u.passwordHash
+                }
+            }
+
+            // 3. Fallback global de migración para admin si tecleó 1234
+            if (usuarioCoincidente == null && cleanPin == "1234") {
+                val admin = usuarios.firstOrNull { it.rol == "ADMIN" }
+                if (admin != null) {
+                    val legacyHash = CryptoManager.hashPassword("admin123", admin.salt)
+                    if (legacyHash == admin.passwordHash) {
+                        val newSalt = CryptoManager.generateSalt()
+                        val newHash = CryptoManager.hashPassword("1234", newSalt)
+                        val adminActualizado = admin.copy(passwordHash = newHash, salt = newSalt)
+                        usuarioDao.updateUsuario(adminActualizado)
+                        usuarioCoincidente = adminActualizado
+                    }
+                }
             }
 
             if (usuarioCoincidente != null) {
@@ -243,7 +284,7 @@ class AuthRepositoryImpl @Inject constructor(
         try {
             if (usuarioDao.countUsuarios() == 0) {
                 val salt = CryptoManager.generateSalt()
-                val hash = CryptoManager.hashPassword("admin123", salt)
+                val hash = CryptoManager.hashPassword("1234", salt) // PIN numérico por defecto
                 usuarioDao.insertUsuario(
                     UsuarioEntity(
                         id = "1",

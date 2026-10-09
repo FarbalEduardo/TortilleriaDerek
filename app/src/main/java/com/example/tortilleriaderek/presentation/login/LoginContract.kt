@@ -16,14 +16,14 @@ enum class LoginMode {
 @Immutable
 data class LoginUiState(
     val isLoading: Boolean = false,
-    val usernameInput: String = "",
+    val usernameInput: String = "admin1",
     val passwordInput: String = "",
     val pinInput: String = "",
     val selectedMode: LoginMode = LoginMode.ABRIR_TURNO,
     val isPasswordVisible: Boolean = false,
     val isTurnoCerrado: Boolean = true,
     val errorMessage: String? = null,
-    val tieneBiometria: Boolean = false,
+    val tieneBiometria: Boolean = true,
     val estaBloqueado: Boolean = false,
     val segundosRestantesBloqueo: Long = 0L,
     val showMasterKeyDialog: Boolean = false,

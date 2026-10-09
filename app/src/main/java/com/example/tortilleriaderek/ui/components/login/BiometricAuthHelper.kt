@@ -17,7 +17,8 @@ object BiometricAuthHelper {
     fun tieneHardwareBiometrico(context: Context): Boolean {
         return try {
             val biometricManager = context.getSystemService(BiometricManager::class.java) ?: return false
-            biometricManager.canAuthenticate() == BiometricManager.BIOMETRIC_SUCCESS
+            val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK
+            biometricManager.canAuthenticate(authenticators) == BiometricManager.BIOMETRIC_SUCCESS
         } catch (_: Exception) {
             false
         }
@@ -31,6 +32,34 @@ object BiometricAuthHelper {
         onError: (String) -> Unit
     ) {
         try {
+            val biometricManager = activity.getSystemService(BiometricManager::class.java)
+            if (biometricManager == null) {
+                onError(activity.getString(com.example.tortilleriaderek.R.string.biometria_no_hardware))
+                return
+            }
+
+            val authenticators = BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.BIOMETRIC_WEAK
+            when (biometricManager.canAuthenticate(authenticators)) {
+                BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                    onError(activity.getString(com.example.tortilleriaderek.R.string.biometria_no_hardware))
+                    return
+                }
+                BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                    onError(activity.getString(com.example.tortilleriaderek.R.string.biometria_no_huellas_registradas))
+                    return
+                }
+                BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                    onError("El sensor de huellas dactilares no está disponible temporalmente.")
+                    return
+                }
+                BiometricManager.BIOMETRIC_SUCCESS -> {
+                    // Proceder con el diálogo biométrico nativo
+                }
+                else -> {
+                    // Si el sistema responde con otro estado, permitimos intentar o usar PIN
+                }
+            }
+
             val executor = ContextCompat.getMainExecutor(activity)
             val cancellationSignal = CancellationSignal()
 

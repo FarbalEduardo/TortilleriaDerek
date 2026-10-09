@@ -32,13 +32,13 @@ class LoginPinUseCaseTest {
 
         assertTrue(result.isFailure)
         assertEquals("El PIN debe tener al menos 4 dígitos.", result.exceptionOrNull()?.message)
-        coVerify(exactly = 0) { authRepository.loginConPin(any()) }
+        coVerify(exactly = 0) { authRepository.loginConPin(any(), any()) }
     }
 
     @Test
     fun `autenticarConPin exitoso resetea intentos fallidos`() = runTest {
         val usuario = Usuario(id = "1", username = "admin1", rol = "ADMIN")
-        coEvery { authRepository.loginConPin("1234") } returns Result.success(usuario)
+        coEvery { authRepository.loginConPin("1234", any()) } returns Result.success(usuario)
 
         val result = loginPinUseCase.autenticarConPin("1234")
 
@@ -50,7 +50,7 @@ class LoginPinUseCaseTest {
 
     @Test
     fun `autenticarConPin fallido registra intento fallido`() = runTest {
-        coEvery { authRepository.loginConPin("9999") } returns Result.failure(Exception("PIN incorrecto"))
+        coEvery { authRepository.loginConPin("9999", any()) } returns Result.failure(Exception("PIN incorrecto"))
 
         val result = loginPinUseCase.autenticarConPin("9999")
 

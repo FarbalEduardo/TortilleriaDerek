@@ -11,12 +11,12 @@ import javax.inject.Inject
 class LoginPinUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
-    suspend fun autenticarConPin(pinRaw: String): Result<Usuario> {
+    suspend fun autenticarConPin(pinRaw: String, username: String? = null): Result<Usuario> {
         val cleanPin = pinRaw.trim()
         if (cleanPin.length < 4) {
             return Result.failure(IllegalArgumentException("El PIN debe tener al menos 4 dígitos."))
         }
-        val result = authRepository.loginConPin(cleanPin)
+        val result = authRepository.loginConPin(cleanPin, username?.trim())
         if (result.isSuccess) {
             authRepository.resetearIntentosFallidos()
         } else {

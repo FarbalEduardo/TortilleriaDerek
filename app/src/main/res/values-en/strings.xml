@@ -30,4 +30,10 @@
     <string name="dialog_recuperacion_error_no_coinciden">Entered PINs do not match.</string>
     <string name="dialog_recuperacion_error_longitud">PIN must contain at least 4 digits.</string>
     <string name="dialog_recuperacion_error_clave_invalida">Invalid Emergency Master Key.</string>
+
+    <string name="login_label_operador">Operator / User</string>
+    <string name="login_operador_hint">Enter user (e.g. admin1)</string>
+    <string name="login_limpiar_operador">Clear user input</string>
+    <string name="biometria_no_huellas_registradas">No fingerprints enrolled on this device. Configure them in Android Settings or use your PIN.</string>
+    <string name="biometria_no_hardware">This device does not have a biometric sensor.</string>
 </resources>

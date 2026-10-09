@@ -148,7 +148,8 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = loginPinUseCase.autenticarConPin(pin)
+            val username = _uiState.value.usernameInput.trim().takeIf { it.isNotBlank() }
+            val result = loginPinUseCase.autenticarConPin(pinRaw = pin, username = username)
 
             _uiState.update { it.copy(isLoading = false) }
 
