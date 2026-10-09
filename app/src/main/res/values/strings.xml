@@ -158,8 +158,8 @@
 
     <!-- Login, PIN, Biometría y Clave Maestra -->
     <string name="login_titulo">Acceso al Sistema</string>
-    <string name="login_subtitulo">Ingresa tu PIN o utiliza el lector de huella</string>
-    <string name="login_pin_placeholder">Ingresa tu PIN numérico</string>
+    <string name="login_subtitulo">Ingresa tu código numérico, patrón o huella</string>
+    <string name="login_pin_placeholder">Ingresa tu código numérico</string>
     <string name="login_btn_biometria_desc">Acceso con Huella Dactilar</string>
     <string name="login_olvidaste_pin">¿Problemas de acceso? Usar Clave Maestra</string>
     <string name="login_bloqueo_aviso">Sistema bloqueado por intentos fallidos (%1$d s restantes)</string>
@@ -172,6 +172,13 @@
     <string name="login_turno_cerrado">TURNO CERRADO</string>
     <string name="login_sistema_seguro">Sistema de Control Seguro • v1.0</string>
 
+    <string name="login_metodo_pin">Código PIN</string>
+    <string name="login_metodo_patron">Patrón</string>
+    <string name="login_patron_instruccion">Conecta al menos 4 puntos</string>
+    <string name="login_patron_puntos_conectados">%1$d puntos conectados</string>
+    <string name="login_patron_limpiar">Limpiar patrón</string>
+    <string name="login_patron_confirmar">Ingresar con Patrón</string>
+
     <string name="dialog_recuperacion_titulo">Recuperación de Acceso Offline</string>
     <string name="dialog_recuperacion_subtitulo">Ingresa la Clave Maestra de Emergencia para redefinir el PIN del Administrador sin perder datos.</string>
     <string name="dialog_recuperacion_label_master_key">Clave Maestra de Rescate</string>
@@ -183,9 +190,6 @@
     <string name="dialog_recuperacion_error_longitud">El PIN debe contener al menos 4 números.</string>
     <string name="dialog_recuperacion_error_clave_invalida">La Clave Maestra de Rescate es incorrecta.</string>
 
-    <string name="login_label_operador">Operador / Usuario</string>
-    <string name="login_operador_hint">Escribe el usuario (ej. admin1)</string>
-    <string name="login_limpiar_operador">Limpiar campo de usuario</string>
     <string name="biometria_no_huellas_registradas">No hay huellas registradas en el dispositivo. Configúralas en Ajustes de Android o usa tu PIN.</string>
     <string name="biometria_no_hardware">Este dispositivo no cuenta con sensor biométrico.</string>
 </resources>

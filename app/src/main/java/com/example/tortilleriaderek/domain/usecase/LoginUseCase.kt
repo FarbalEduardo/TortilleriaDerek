@@ -11,6 +11,14 @@ import javax.inject.Inject
 class LoginUseCase @Inject constructor(
     private val repository: AuthRepository
 ) {
+    suspend operator fun invoke(codigoOPatron: String): Result<Usuario> {
+        val clean = codigoOPatron.trim()
+        if (clean.isBlank()) {
+            return Result.failure(Exception("Ingresa un código o patrón de acceso"))
+        }
+        return repository.loginConCodigoOPatron(clean)
+    }
+
     suspend operator fun invoke(username: String, passwordRaw: String): Result<Usuario> {
         if (username.isBlank() || passwordRaw.isBlank()) {
             return Result.failure(Exception("Los campos no pueden estar vacíos"))

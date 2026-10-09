@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.Flow
  */
 interface AuthRepository {
     suspend fun login(username: String, passwordRaw: String): Result<Usuario>
-    suspend fun loginConPin(pinRaw: String, username: String? = null): Result<Usuario>
+    suspend fun loginConCodigoOPatron(codigoOPatron: String): Result<Usuario>
+    suspend fun loginConPin(pinRaw: String): Result<Usuario>
+    suspend fun loginConPatron(patronRaw: String): Result<Usuario>
     suspend fun loginRapidoAdminBiometria(): Result<Usuario>
 
     fun getSeguridadConfig(): Flow<SeguridadConfig>

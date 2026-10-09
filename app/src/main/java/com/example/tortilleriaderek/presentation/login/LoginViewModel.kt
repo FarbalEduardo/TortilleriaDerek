@@ -18,8 +18,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * Creado por 🏗️ mobile-developer y 🛡️ security-expert.
- * ViewModel reactivo MVI para autenticación con PIN, Biometría y Master Key.
+ * Creado por 🏗️ mobile-developer.
+ * ViewModel MVI reactivo para Login con soporte exclusivo de Código Numérico (PIN),
+ * Patrón táctil y biometría. Sin selección ni escritura de usuarios.
  */
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -56,11 +57,8 @@ class LoginViewModel @Inject constructor(
 
     fun onEvent(event: LoginUiEvent) {
         when (event) {
-            is LoginUiEvent.OnUsernameChanged -> {
-                _uiState.update { it.copy(usernameInput = event.username, errorMessage = null) }
-            }
-            is LoginUiEvent.OnPasswordChanged -> {
-                _uiState.update { it.copy(passwordInput = event.password, errorMessage = null) }
+            is LoginUiEvent.OnCambiarMetodoAcceso -> {
+                _uiState.update { it.copy(metodoAcceso = event.metodo, errorMessage = null) }
             }
             is LoginUiEvent.OnDigitoPresionado -> {
                 if (_uiState.value.estaBloqueado) return
@@ -68,7 +66,6 @@ class LoginViewModel @Inject constructor(
                 if (currentPin.length < 6) {
                     val nuevoPin = currentPin + event.digito
                     _uiState.update { it.copy(pinInput = nuevoPin, errorMessage = null) }
-                    // En POS si completa 4 dígitos y es la longitud típica, intentamos autenticar
                     if (nuevoPin.length == 4) {
                         realizarLoginConPin(nuevoPin)
                     }
@@ -80,6 +77,22 @@ class LoginViewModel @Inject constructor(
                     _uiState.update { it.copy(pinInput = currentPin.dropLast(1), errorMessage = null) }
                 }
             }
+            is LoginUiEvent.OnPatronNodoSeleccionado -> {
+                if (_uiState.value.estaBloqueado) return
+                val actual = _uiState.value.patronInput
+                if (!actual.contains(event.nodo.toString())) {
+                    val nuevo = actual + event.nodo
+                    _uiState.update { it.copy(patronInput = nuevo, errorMessage = null) }
+                }
+            }
+            LoginUiEvent.OnLimpiarPatron -> {
+                _uiState.update { it.copy(patronInput = "", errorMessage = null) }
+            }
+            LoginUiEvent.OnConfirmarPatron -> {
+                if (_uiState.value.patronInput.length >= 4) {
+                    realizarLoginConPatron(_uiState.value.patronInput)
+                }
+            }
             LoginUiEvent.OnBiometriaClick -> {
                 viewModelScope.launch {
                     _effect.send(LoginUiEffect.IniciarBiometricPrompt)
@@ -88,22 +101,20 @@ class LoginViewModel @Inject constructor(
             is LoginUiEvent.OnModeSelected -> {
                 _uiState.update { it.copy(selectedMode = event.mode) }
             }
-            LoginUiEvent.OnTogglePasswordVisibility -> {
-                _uiState.update { it.copy(isPasswordVisible = !it.isPasswordVisible) }
-            }
             LoginUiEvent.OnIniciarSesionClick -> {
-                if (_uiState.value.pinInput.isNotBlank()) {
+                if (_uiState.value.metodoAcceso == MetodoAcceso.CODIGO_PIN && _uiState.value.pinInput.isNotBlank()) {
                     realizarLoginConPin(_uiState.value.pinInput)
-                } else {
-                    val abrirTurno = _uiState.value.selectedMode == LoginMode.ABRIR_TURNO
-                    realizarLogin(abrirTurno = abrirTurno)
+                } else if (_uiState.value.metodoAcceso == MetodoAcceso.PATRON && _uiState.value.patronInput.isNotBlank()) {
+                    realizarLoginConPatron(_uiState.value.patronInput)
                 }
             }
             LoginUiEvent.OnAbrirTurnoClick -> {
-                realizarLogin(abrirTurno = true)
+                _uiState.update { it.copy(selectedMode = LoginMode.ABRIR_TURNO) }
+                onEvent(LoginUiEvent.OnIniciarSesionClick)
             }
             LoginUiEvent.OnSoloConsultaClick -> {
-                realizarLogin(abrirTurno = false)
+                _uiState.update { it.copy(selectedMode = LoginMode.SOLO_CONSULTA) }
+                onEvent(LoginUiEvent.OnIniciarSesionClick)
             }
             LoginUiEvent.OnSettingsClick -> {
                 viewModelScope.launch {
@@ -111,7 +122,7 @@ class LoginViewModel @Inject constructor(
                 }
             }
             LoginUiEvent.OnBackupClick -> {
-                // Manejado a nivel de UI para desplegar selector de exportación/importación
+                // Manejado a nivel de UI
             }
             LoginUiEvent.OnAbrirDialogoMasterKey -> {
                 _uiState.update { it.copy(showMasterKeyDialog = true, masterKeyError = null) }
@@ -148,8 +159,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val username = _uiState.value.usernameInput.trim().takeIf { it.isNotBlank() }
-            val result = loginPinUseCase.autenticarConPin(pinRaw = pin, username = username)
+            val result = loginPinUseCase.autenticarConPin(pinRaw = pin)
 
             _uiState.update { it.copy(isLoading = false) }
 
@@ -167,24 +177,22 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun realizarLogin(abrirTurno: Boolean) {
+    private fun realizarLoginConPatron(patron: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
-            val result = loginUseCase(
-                username = _uiState.value.usernameInput.trim(),
-                passwordRaw = _uiState.value.passwordInput.trim()
-            )
+            val result = loginPinUseCase.autenticarConPatron(patronRaw = patron)
 
             _uiState.update { it.copy(isLoading = false) }
 
             result.fold(
                 onSuccess = { usuario ->
-                    navegarSegunModo(usuario.id, abrirTurno)
+                    _uiState.update { it.copy(patronInput = "") }
+                    navegarSegunModo(usuario.id)
                 },
                 onFailure = { error ->
-                    val mensaje = error.message ?: "Usuario o contraseña incorrectos"
-                    _uiState.update { it.copy(errorMessage = mensaje) }
+                    val mensaje = error.message ?: "Patrón incorrecto"
+                    _uiState.update { it.copy(errorMessage = mensaje, patronInput = "") }
                     _effect.send(LoginUiEffect.ShowError(mensaje))
                 }
             )
@@ -203,10 +211,15 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun restablecerPinConMasterKey(claveMaestra: String, nuevoPin: String) {
+    private fun restablecerPinConMasterKey(masterKey: String, nuevoPin: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(masterKeyCargando = true, masterKeyError = null) }
-            val result = recuperarAccesoMasterKeyUseCase.restablecerPinAdmin(claveMaestra, nuevoPin)
+
+            val result = recuperarAccesoMasterKeyUseCase.restablecerPinAdmin(
+                claveMaestraRaw = masterKey,
+                nuevoPin = nuevoPin
+            )
+
             _uiState.update { it.copy(masterKeyCargando = false) }
 
             result.fold(
@@ -214,16 +227,14 @@ class LoginViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             showMasterKeyDialog = false,
-                            pinInput = nuevoPin,
-                            masterKeyError = null
+                            masterKeyError = null,
+                            pinInput = ""
                         )
                     }
-                    _effect.send(LoginUiEffect.ShowToast("¡PIN restablecido con éxito! Ya puedes ingresar."))
+                    _effect.send(LoginUiEffect.ShowToast("PIN restablecido con éxito. Ya puedes ingresar."))
                 },
                 onFailure = { error ->
-                    _uiState.update {
-                        it.copy(masterKeyError = error.message ?: "Clave Maestra de Rescate incorrecta")
-                    }
+                    _uiState.update { it.copy(masterKeyError = error.message ?: "Error al restablecer PIN") }
                 }
             )
         }

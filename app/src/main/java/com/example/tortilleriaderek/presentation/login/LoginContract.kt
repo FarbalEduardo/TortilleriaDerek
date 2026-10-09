@@ -5,7 +5,8 @@ import androidx.compose.runtime.Immutable
 /**
  * Creado por 🏗️ mobile-developer y 🎨 design-ui-expert.
  * Define el contrato MVI (State, Event, Effect) para la pantalla de Login con soporte
- * de PIN numérico, biometría acelerada y recuperación por Clave Maestra.
+ * exclusivo de Código Numérico (PIN), Patrón táctil (3x3), biometría y Clave Maestra.
+ * Sin campo ni selección de usuario.
  */
 
 enum class LoginMode {
@@ -13,14 +14,18 @@ enum class LoginMode {
     SOLO_CONSULTA
 }
 
+enum class MetodoAcceso {
+    CODIGO_PIN,
+    PATRON
+}
+
 @Immutable
 data class LoginUiState(
     val isLoading: Boolean = false,
-    val usernameInput: String = "admin1",
-    val passwordInput: String = "",
     val pinInput: String = "",
+    val patronInput: String = "",
+    val metodoAcceso: MetodoAcceso = MetodoAcceso.CODIGO_PIN,
     val selectedMode: LoginMode = LoginMode.ABRIR_TURNO,
-    val isPasswordVisible: Boolean = false,
     val isTurnoCerrado: Boolean = true,
     val errorMessage: String? = null,
     val tieneBiometria: Boolean = true,
@@ -32,13 +37,14 @@ data class LoginUiState(
 )
 
 sealed interface LoginUiEvent {
-    data class OnUsernameChanged(val username: String) : LoginUiEvent
-    data class OnPasswordChanged(val password: String) : LoginUiEvent
     data class OnDigitoPresionado(val digito: String) : LoginUiEvent
     object OnBorrarDigito : LoginUiEvent
+    data class OnPatronNodoSeleccionado(val nodo: Int) : LoginUiEvent
+    object OnLimpiarPatron : LoginUiEvent
+    object OnConfirmarPatron : LoginUiEvent
+    data class OnCambiarMetodoAcceso(val metodo: MetodoAcceso) : LoginUiEvent
     object OnBiometriaClick : LoginUiEvent
     data class OnModeSelected(val mode: LoginMode) : LoginUiEvent
-    object OnTogglePasswordVisibility : LoginUiEvent
     object OnIniciarSesionClick : LoginUiEvent
     object OnAbrirTurnoClick : LoginUiEvent
     object OnSoloConsultaClick : LoginUiEvent

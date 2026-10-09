@@ -1,5 +1,7 @@
 package com.example.tortilleriaderek.presentation.login
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,9 +12,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Dialpad
+import androidx.compose.material.icons.filled.GridOn
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SwapHoriz
@@ -34,6 +36,8 @@ import com.example.tortilleriaderek.ui.components.login.DialogRecuperacionMaster
 import com.example.tortilleriaderek.ui.components.login.KeypadNumericoLogin
 import com.example.tortilleriaderek.ui.components.login.LoginHeaderSection
 import com.example.tortilleriaderek.ui.components.login.LoginModeSelector
+import com.example.tortilleriaderek.ui.components.login.PatternLockView
+import com.example.tortilleriaderek.ui.components.login.TabMetodoAcceso
 
 private val BrandOrange = Color(0xFFFF6B00)
 private val BrandOrangeSurface = Color(0xFFFFF7F2)
@@ -44,9 +48,9 @@ private val NeutralBody = Color(0xFF736E69)
 
 /**
  * Creado por 🎨 design-ui-expert y 🏗️ mobile-developer.
- * Pantalla modularizada de Login (Artículo III: <250 líneas).
- * Layout compacto Zero-Scroll: barra superior integrada, input de usuario,
- * selector horizontal y teclado numérico adaptado.
+ * Pantalla modularizada de Login (Artículo III: <300 líneas).
+ * Soporte exclusivo de Código Numérico (PIN) y Patrón táctil (3x3),
+ * tarjetas verticales de modo de acceso y recuperación por Clave Maestra.
  */
 @Composable
 fun LoginScreenContent(
@@ -96,19 +100,18 @@ fun LoginScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
-                .widthIn(max = 440.dp),
+                .padding(horizontal = 22.dp, vertical = 14.dp)
+                .widthIn(max = 460.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // 1. Barra Superior Integrada: Status Pill a la izquierda | Respaldo y Ajustes a la derecha
+            // 1. Barra Superior: Badge Status a la izquierda | Botones de Respaldo y Ajustes a la derecha
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Badge Status: TURNO CERRADO
                 Box(
                     modifier = Modifier
                         .clip(CircleShape)
@@ -137,7 +140,6 @@ fun LoginScreenContent(
                     }
                 }
 
-                // Botones Reacomodados: Respaldo y Ajustes en fila horizontal
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -148,7 +150,7 @@ fun LoginScreenContent(
                         border = BorderStroke(1.dp, NeutralBorderSubtle),
                         shadowElevation = 1.dp,
                         modifier = Modifier
-                            .size(38.dp)
+                            .size(40.dp)
                             .clip(CircleShape)
                             .clickable { showBackupOptionsDialog = true }
                             .testTag("login_backup_button")
@@ -169,7 +171,7 @@ fun LoginScreenContent(
                         border = BorderStroke(1.dp, NeutralBorderSubtle),
                         shadowElevation = 1.dp,
                         modifier = Modifier
-                            .size(38.dp)
+                            .size(40.dp)
                             .clip(CircleShape)
                             .clickable { onEvent(LoginUiEvent.OnSettingsClick) }
                             .testTag("login_settings_button")
@@ -179,85 +181,58 @@ fun LoginScreenContent(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = "Ajustes del Sistema",
                                 tint = Color(0xFF524E4A),
-                                modifier = Modifier.size(19.dp)
+                                modifier = Modifier.size(20.dp)
                             )
                         }
                     }
                 }
             }
 
-            // 2. Cabecera Compacta (Título y subtítulo sin caja registradora)
+            // 2. Cabecera Visual Compacta (Título y subtítulo sin caja registradora)
             LoginHeaderSection()
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // 3. Campo de Escritura de Usuario (Permite cambiar o ver operador actual)
-            OutlinedTextField(
-                value = uiState.usernameInput,
-                onValueChange = { onEvent(LoginUiEvent.OnUsernameChanged(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("login_username_input"),
-                shape = RoundedCornerShape(14.dp),
-                label = {
-                    Text(
-                        text = stringResource(R.string.login_label_operador),
-                        fontSize = 12.sp
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = stringResource(R.string.login_operador_hint),
-                        fontSize = 12.sp,
-                        color = NeutralBody.copy(alpha = 0.6f)
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        tint = BrandOrange,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                trailingIcon = {
-                    if (uiState.usernameInput.isNotEmpty()) {
-                        IconButton(
-                            onClick = { onEvent(LoginUiEvent.OnUsernameChanged("")) },
-                            modifier = Modifier.size(32.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = stringResource(R.string.login_limpiar_operador),
-                                tint = NeutralBody.copy(alpha = 0.7f),
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    }
-                },
-                singleLine = true,
-                textStyle = LocalTextStyle.current.copy(fontSize = 13.sp, fontWeight = FontWeight.SemiBold),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedBorderColor = BrandOrange,
-                    unfocusedBorderColor = NeutralBorderSubtle,
-                    focusedLabelColor = BrandOrange,
-                    unfocusedLabelColor = NeutralBody
-                )
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 4. Selector de Modo Horizontal Compacto (Abrir Turno vs Solo Consulta)
+            // 3. Tarjetas Verticales de Modo de Acceso (Abrir Turno vs Solo Consulta)
             LoginModeSelector(
                 selectedMode = uiState.selectedMode,
                 onModeSelected = { onEvent(LoginUiEvent.OnModeSelected(it)) }
             )
 
-            // Mensaje de error
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // 4. Selector de Método de Desbloqueo: Código PIN vs Patrón
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color.White)
+                    .border(1.dp, NeutralBorderSubtle, RoundedCornerShape(14.dp))
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                TabMetodoAcceso(
+                    titulo = stringResource(R.string.login_metodo_pin),
+                    icon = Icons.Default.Dialpad,
+                    seleccionado = uiState.metodoAcceso == MetodoAcceso.CODIGO_PIN,
+                    onClick = { onEvent(LoginUiEvent.OnCambiarMetodoAcceso(MetodoAcceso.CODIGO_PIN)) },
+                    testTag = "login_tab_pin",
+                    modifier = Modifier.weight(1f)
+                )
+
+                TabMetodoAcceso(
+                    titulo = stringResource(R.string.login_metodo_patron),
+                    icon = Icons.Default.GridOn,
+                    seleccionado = uiState.metodoAcceso == MetodoAcceso.PATRON,
+                    onClick = { onEvent(LoginUiEvent.OnCambiarMetodoAcceso(MetodoAcceso.PATRON)) },
+                    testTag = "login_tab_patron",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            // Mensaje de error si existe
             if (uiState.errorMessage != null) {
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = uiState.errorMessage,
                     color = MaterialTheme.colorScheme.error,
@@ -267,21 +242,51 @@ fun LoginScreenContent(
                 )
             }
 
-            // 5. Keypad Numérico Ergonómico de 58dp
-            KeypadNumericoLogin(
-                pinLength = uiState.pinInput.length,
-                maxDigits = 6,
-                tieneBiometria = uiState.tieneBiometria,
-                bloqueado = uiState.estaBloqueado,
-                segundosRestantes = uiState.segundosRestantesBloqueo,
-                onDigitoClick = { onEvent(LoginUiEvent.OnDigitoPresionado(it)) },
-                onBorrarClick = { onEvent(LoginUiEvent.OnBorrarDigito) },
-                onBiometriaClick = { onEvent(LoginUiEvent.OnBiometriaClick) },
-                onOlvidastePinClick = { onEvent(LoginUiEvent.OnAbrirDialogoMasterKey) }
-            )
+            Spacer(modifier = Modifier.height(8.dp))
 
-            // 6. Footer institucional
-            Spacer(modifier = Modifier.height(10.dp))
+            // 5. Contenido Dinámico: Teclado Numérico o Patrón Táctil
+            if (uiState.metodoAcceso == MetodoAcceso.CODIGO_PIN) {
+                KeypadNumericoLogin(
+                    pinLength = uiState.pinInput.length,
+                    maxDigits = 6,
+                    tieneBiometria = uiState.tieneBiometria,
+                    bloqueado = uiState.estaBloqueado,
+                    segundosRestantes = uiState.segundosRestantesBloqueo,
+                    onDigitoClick = { onEvent(LoginUiEvent.OnDigitoPresionado(it)) },
+                    onBorrarClick = { onEvent(LoginUiEvent.OnBorrarDigito) },
+                    onBiometriaClick = { onEvent(LoginUiEvent.OnBiometriaClick) },
+                    onOlvidastePinClick = { onEvent(LoginUiEvent.OnAbrirDialogoMasterKey) }
+                )
+            } else {
+                PatternLockView(
+                    patron = uiState.patronInput,
+                    bloqueado = uiState.estaBloqueado,
+                    tieneBiometria = uiState.tieneBiometria,
+                    onNodoSeleccionado = { onEvent(LoginUiEvent.OnPatronNodoSeleccionado(it)) },
+                    onLimpiarPatron = { onEvent(LoginUiEvent.OnLimpiarPatron) },
+                    onConfirmarPatron = { onEvent(LoginUiEvent.OnConfirmarPatron) },
+                    onBiometriaClick = { onEvent(LoginUiEvent.OnBiometriaClick) }
+                )
+            }
+
+            // 6. Enlace a Clave Maestra (cuando está en modo Patrón)
+            if (uiState.metodoAcceso == MetodoAcceso.PATRON) {
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(
+                    onClick = { onEvent(LoginUiEvent.OnAbrirDialogoMasterKey) },
+                    modifier = Modifier.testTag("login_link_master_key")
+                ) {
+                    Text(
+                        text = stringResource(R.string.login_olvidaste_pin),
+                        fontSize = 12.sp,
+                        color = NeutralBody,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+
+            // 7. Footer institucional
+            Spacer(modifier = Modifier.height(14.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -321,6 +326,7 @@ fun LoginScreenContent(
         }
     }
 }
+
 
 @Preview(showBackground = true, device = "spec:width=411dp,height=891dp", name = "Móvil")
 @Composable

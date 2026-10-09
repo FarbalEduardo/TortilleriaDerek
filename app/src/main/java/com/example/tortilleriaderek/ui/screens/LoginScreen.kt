@@ -20,8 +20,7 @@ fun LoginScreen(
     var state by remember {
         mutableStateOf(
             LoginUiState(
-                usernameInput = "Operador Derek",
-                passwordInput = "1234",
+                pinInput = "1234",
                 selectedMode = LoginMode.ABRIR_TURNO
             )
         )
@@ -31,10 +30,12 @@ fun LoginScreen(
         uiState = state,
         onEvent = { event ->
             when (event) {
-                is LoginUiEvent.OnUsernameChanged -> state = state.copy(usernameInput = event.username)
-                is LoginUiEvent.OnPasswordChanged -> state = state.copy(passwordInput = event.password)
                 is LoginUiEvent.OnModeSelected -> state = state.copy(selectedMode = event.mode)
-                LoginUiEvent.OnTogglePasswordVisibility -> state = state.copy(isPasswordVisible = !state.isPasswordVisible)
+                is LoginUiEvent.OnCambiarMetodoAcceso -> state = state.copy(metodoAcceso = event.metodo)
+                is LoginUiEvent.OnDigitoPresionado -> state = state.copy(pinInput = state.pinInput + event.digito)
+                LoginUiEvent.OnBorrarDigito -> state = state.copy(pinInput = state.pinInput.dropLast(1))
+                is LoginUiEvent.OnPatronNodoSeleccionado -> state = state.copy(patronInput = state.patronInput + event.nodo)
+                LoginUiEvent.OnLimpiarPatron -> state = state.copy(patronInput = "")
                 LoginUiEvent.OnIniciarSesionClick -> onLoginSuccess()
                 LoginUiEvent.OnSettingsClick -> onNavigateToSettings()
                 else -> Unit
@@ -50,8 +51,7 @@ fun LoginScreenPreview() {
     TortilleriaDerekTheme {
         LoginScreenContent(
             uiState = LoginUiState(
-                usernameInput = "Operador Derek",
-                passwordInput = "1234",
+                pinInput = "1234",
                 selectedMode = LoginMode.ABRIR_TURNO
             ),
             onEvent = {}

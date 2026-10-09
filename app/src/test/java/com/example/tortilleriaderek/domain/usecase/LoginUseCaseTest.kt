@@ -69,18 +69,22 @@ class LoginUseCaseTest {
     }
 
     @Test
-    fun `cuando credenciales son incorrectas, propaga Result failure del repositorio`() = runTest {
-        // Given
-        val exception = Exception("Usuario o contraseña incorrectos")
-        coEvery { authRepository.login("admin1", "wrongPass") } returns Result.failure(exception)
-
-        // When
-        val result = loginUseCase(username = "admin1", passwordRaw = "wrongPass")
-
-        // Then
+    fun `cuando codigo o patron esta vacio, retorna Result failure`() = runTest {
+        val result = loginUseCase(codigoOPatron = "  ")
         assertTrue(result.isFailure)
-        assertEquals("Usuario o contraseña incorrectos", result.exceptionOrNull()?.message)
-        
-        coVerify(exactly = 1) { authRepository.login("admin1", "wrongPass") }
+        assertEquals("Ingresa un código o patrón de acceso", result.exceptionOrNull()?.message)
+        coVerify(exactly = 0) { authRepository.loginConCodigoOPatron(any()) }
+    }
+
+    @Test
+    fun `cuando codigo o patron es correcto, retorna Usuario exitosamente`() = runTest {
+        val usuario = Usuario(id = "1", username = "admin1", rol = "ADMIN")
+        coEvery { authRepository.loginConCodigoOPatron("1234") } returns Result.success(usuario)
+
+        val result = loginUseCase(codigoOPatron = "1234")
+
+        assertTrue(result.isSuccess)
+        assertEquals(usuario, result.getOrNull())
+        coVerify(exactly = 1) { authRepository.loginConCodigoOPatron("1234") }
     }
 }

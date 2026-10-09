@@ -13,7 +13,7 @@ import org.junit.Test
 
 /**
  * Creado por 🏆 quality-pm-expert.
- * Pruebas unitarias para LoginPinUseCase.
+ * Pruebas unitarias para LoginPinUseCase con código PIN, patrón y biometría.
  */
 class LoginPinUseCaseTest {
 
@@ -31,14 +31,14 @@ class LoginPinUseCaseTest {
         val result = loginPinUseCase.autenticarConPin("12")
 
         assertTrue(result.isFailure)
-        assertEquals("El PIN debe tener al menos 4 dígitos.", result.exceptionOrNull()?.message)
-        coVerify(exactly = 0) { authRepository.loginConPin(any(), any()) }
+        assertEquals("El código PIN debe tener al menos 4 dígitos.", result.exceptionOrNull()?.message)
+        coVerify(exactly = 0) { authRepository.loginConPin(any()) }
     }
 
     @Test
     fun `autenticarConPin exitoso resetea intentos fallidos`() = runTest {
         val usuario = Usuario(id = "1", username = "admin1", rol = "ADMIN")
-        coEvery { authRepository.loginConPin("1234", any()) } returns Result.success(usuario)
+        coEvery { authRepository.loginConPin("1234") } returns Result.success(usuario)
 
         val result = loginPinUseCase.autenticarConPin("1234")
 
@@ -50,13 +50,34 @@ class LoginPinUseCaseTest {
 
     @Test
     fun `autenticarConPin fallido registra intento fallido`() = runTest {
-        coEvery { authRepository.loginConPin("9999", any()) } returns Result.failure(Exception("PIN incorrecto"))
+        coEvery { authRepository.loginConPin("9999") } returns Result.failure(Exception("PIN incorrecto"))
 
         val result = loginPinUseCase.autenticarConPin("9999")
 
         assertTrue(result.isFailure)
         coVerify(exactly = 1) { authRepository.registrarIntentoFallido() }
         coVerify(exactly = 0) { authRepository.resetearIntentosFallidos() }
+    }
+
+    @Test
+    fun `autenticarConPatron falla si conecta menos de 4 nodos`() = runTest {
+        val result = loginPinUseCase.autenticarConPatron("123")
+
+        assertTrue(result.isFailure)
+        assertEquals("El patrón debe conectar al menos 4 puntos.", result.exceptionOrNull()?.message)
+        coVerify(exactly = 0) { authRepository.loginConPatron(any()) }
+    }
+
+    @Test
+    fun `autenticarConPatron exitoso resetea intentos`() = runTest {
+        val usuario = Usuario(id = "1", username = "admin1", rol = "ADMIN")
+        coEvery { authRepository.loginConPatron("1234") } returns Result.success(usuario)
+
+        val result = loginPinUseCase.autenticarConPatron("1234")
+
+        assertTrue(result.isSuccess)
+        assertEquals(usuario, result.getOrNull())
+        coVerify(exactly = 1) { authRepository.resetearIntentosFallidos() }
     }
 
     @Test
