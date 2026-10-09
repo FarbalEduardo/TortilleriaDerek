@@ -33,8 +33,6 @@ fun ConfiguracionBodyContent(
     onAgregarUsuario: () -> Unit,
     onEditarUsuario: (UsuarioConfig) -> Unit,
     onEliminarUsuario: (UsuarioConfig) -> Unit,
-    onExportarDb: () -> Unit,
-    onImportarDb: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -82,12 +80,6 @@ fun ConfiguracionBodyContent(
                 onEliminarClick = onEliminarUsuario
             )
         }
-
-        // ── 6. CARD: TRANSFERENCIA Y RESPALDO SQLITE ──────────────────────
-        CardRespaldoTransferenciaDb(
-            onExportarClick = onExportarDb,
-            onImportarClick = onImportarDb
-        )
 
         Spacer(modifier = Modifier.height(10.dp))
     }

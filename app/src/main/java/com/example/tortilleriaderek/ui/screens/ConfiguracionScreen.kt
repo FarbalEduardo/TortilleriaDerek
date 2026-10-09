@@ -12,11 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.tortilleriaderek.presentation.backup.BackupUiIntent
-import com.example.tortilleriaderek.presentation.backup.BackupViewModel
 import com.example.tortilleriaderek.presentation.configuracion.ConfiguracionViewModel
 import com.example.tortilleriaderek.ui.components.TortilleriaNavBar
-import com.example.tortilleriaderek.ui.components.backup.BackupDialogsContainer
 import com.example.tortilleriaderek.ui.components.configuracion.*
 import com.example.tortilleriaderek.ui.theme.*
 
@@ -27,7 +24,6 @@ import com.example.tortilleriaderek.ui.theme.*
 @Composable
 fun ConfiguracionScreen(
     viewModel: ConfiguracionViewModel = hiltViewModel(),
-    backupViewModel: BackupViewModel = hiltViewModel(),
     onNavigateToVenta: () -> Unit = {},
     onNavigateToProduccion: () -> Unit = {},
     onNavigateToMetricas: () -> Unit = {},
@@ -165,24 +161,6 @@ fun ConfiguracionScreen(
             },
             onEliminarUsuario = { usr ->
                 usuarioAEliminar = usr
-            },
-            onExportarDb = {
-                val adminActual = usuariosEntity.firstOrNull { it.rol == "ADMIN" }?.username
-                backupViewModel.onIntent(
-                    BackupUiIntent.IniciarExportacion(
-                        esAdminLogueado = true,
-                        adminUsername = adminActual
-                    )
-                )
-            },
-            onImportarDb = {
-                val adminActual = usuariosEntity.firstOrNull { it.rol == "ADMIN" }?.username
-                backupViewModel.onIntent(
-                    BackupUiIntent.IniciarImportacion(
-                        esAdminLogueado = true,
-                        adminUsername = adminActual
-                    )
-                )
             },
             modifier = Modifier.padding(innerPadding)
         )
@@ -352,9 +330,6 @@ fun ConfiguracionScreen(
         },
         onDismissEditEstandares = { showEditEstandaresDialog = false }
     )
-
-    // Contenedor de Diálogos y Overlays de Respaldo SQLite
-    BackupDialogsContainer(viewModel = backupViewModel)
 }
 
 @Preview(showBackground = true, showSystemUi = true)
