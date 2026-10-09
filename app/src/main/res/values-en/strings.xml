@@ -2,5 +2,32 @@
 <resources>
     <!-- General & App (English) -->
     <string name="app_name">Tortillería Derek</string>
-    <string name="login_desarrollada_por">Developed by </string>
+    <string name="login_desarrollada_por">"Developed by "</string>
+
+    <!-- Login, PIN, Biometrics & Master Key (English) -->
+    <string name="login_titulo">System Access</string>
+    <string name="login_subtitulo">Enter your PIN or use fingerprint scanner</string>
+    <string name="login_pin_placeholder">Enter numeric PIN</string>
+    <string name="login_btn_biometria_desc">Fingerprint Access</string>
+    <string name="login_olvidaste_pin">Access issues? Use Master Key</string>
+    <string name="login_bloqueo_aviso">System locked due to failed attempts (%1$d s left)</string>
+    <string name="login_modo_turno">Open Shift</string>
+    <string name="login_modo_turno_desc">Start operating shift to record counter and delivery sales</string>
+    <string name="login_modo_consulta">View Only</string>
+    <string name="login_modo_consulta_desc">Inspect metrics and history without modifying active shift</string>
+    <string name="login_verificando">Verifying credentials...</string>
+    <string name="login_iniciar_sesion">Sign In</string>
+    <string name="login_turno_cerrado">SHIFT CLOSED</string>
+    <string name="login_sistema_seguro">Secure Control System • v1.0</string>
+
+    <string name="dialog_recuperacion_titulo">Offline Access Recovery</string>
+    <string name="dialog_recuperacion_subtitulo">Enter the Emergency Master Key to reset Administrator PIN without data loss.</string>
+    <string name="dialog_recuperacion_label_master_key">Emergency Master Key</string>
+    <string name="dialog_recuperacion_label_nuevo_pin">New Administrator PIN (min 4 digits)</string>
+    <string name="dialog_recuperacion_label_confirmar_pin">Confirm New PIN</string>
+    <string name="dialog_recuperacion_btn_restablecer">Reset PIN and Login</string>
+    <string name="dialog_recuperacion_exito">PIN successfully reset! You can now log in with your new PIN.</string>
+    <string name="dialog_recuperacion_error_no_coinciden">Entered PINs do not match.</string>
+    <string name="dialog_recuperacion_error_longitud">PIN must contain at least 4 digits.</string>
+    <string name="dialog_recuperacion_error_clave_invalida">Invalid Emergency Master Key.</string>
 </resources>

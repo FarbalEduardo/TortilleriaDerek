@@ -187,6 +187,26 @@ object Migrations {
         asegurarColumna(db, "turnos", "notasCierre", "TEXT")
     }
 
+    private fun migrarAVersion9(db: SupportSQLiteDatabase) {
+        migrarAVersion8(db)
+
+        // Crear tabla seguridad_config si no existe
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS `seguridad_config` (
+                `id` TEXT NOT NULL,
+                `masterKeyHash` TEXT NOT NULL,
+                `masterKeySalt` TEXT NOT NULL,
+                `biometriaHabilitada` INTEGER NOT NULL DEFAULT 0,
+                `intentosFallidos` INTEGER NOT NULL DEFAULT 0,
+                `timestampBloqueo` INTEGER NOT NULL DEFAULT 0,
+                `fechaModificacion` INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY(`id`)
+            )
+            """.trimIndent()
+        )
+    }
+
     private fun asegurarColumna(db: SupportSQLiteDatabase, tabla: String, columna: String, definicion: String) {
         try {
             val cursor = db.query("PRAGMA table_info(`$tabla`)")
@@ -243,6 +263,22 @@ object Migrations {
         override fun migrate(db: SupportSQLiteDatabase) = migrarAVersion8(db)
     }
 
+    val MIGRATION_8_9 = object : Migration(8, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) = migrarAVersion9(db)
+    }
+
+    val MIGRATION_7_9 = object : Migration(7, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) = migrarAVersion9(db)
+    }
+
+    val MIGRATION_6_9 = object : Migration(6, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) = migrarAVersion9(db)
+    }
+
+    val MIGRATION_1_9 = object : Migration(1, 9) {
+        override fun migrate(db: SupportSQLiteDatabase) = migrarAVersion9(db)
+    }
+
     val ALL_MIGRATIONS = arrayOf(
         MIGRATION_1_7,
         MIGRATION_2_7,
@@ -252,6 +288,10 @@ object Migrations {
         MIGRATION_6_7,
         MIGRATION_7_8,
         MIGRATION_6_8,
-        MIGRATION_1_8
+        MIGRATION_1_8,
+        MIGRATION_8_9,
+        MIGRATION_7_9,
+        MIGRATION_6_9,
+        MIGRATION_1_9
     )
 }

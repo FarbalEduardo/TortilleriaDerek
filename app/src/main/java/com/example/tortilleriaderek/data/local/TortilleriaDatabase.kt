@@ -6,6 +6,7 @@ import com.example.tortilleriaderek.data.local.dao.ConfiguracionProduccionDao
 import com.example.tortilleriaderek.data.local.dao.ProduccionDao
 import com.example.tortilleriaderek.data.local.dao.RepartidorDao
 import com.example.tortilleriaderek.data.local.dao.RutaRepartidorDao
+import com.example.tortilleriaderek.data.local.dao.SeguridadConfigDao
 import com.example.tortilleriaderek.data.local.dao.TurnoDao
 import com.example.tortilleriaderek.data.local.dao.UsuarioDao
 import com.example.tortilleriaderek.data.local.dao.VentaDao
@@ -13,6 +14,7 @@ import com.example.tortilleriaderek.data.local.entity.ConfiguracionProduccionEnt
 import com.example.tortilleriaderek.data.local.entity.MermaProduccionEntity
 import com.example.tortilleriaderek.data.local.entity.RepartidorEntity
 import com.example.tortilleriaderek.data.local.entity.RutaRepartidorEntity
+import com.example.tortilleriaderek.data.local.entity.SeguridadConfigEntity
 import com.example.tortilleriaderek.data.local.entity.TandaProduccionEntity
 import com.example.tortilleriaderek.data.local.entity.TurnoEntity
 import com.example.tortilleriaderek.data.local.entity.UsuarioEntity
@@ -27,9 +29,10 @@ import com.example.tortilleriaderek.data.local.entity.VentaEntity
         TandaProduccionEntity::class,
         MermaProduccionEntity::class,
         RepartidorEntity::class,
-        RutaRepartidorEntity::class
+        RutaRepartidorEntity::class,
+        SeguridadConfigEntity::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = true
 )
 abstract class TortilleriaDatabase : RoomDatabase() {
@@ -40,4 +43,5 @@ abstract class TortilleriaDatabase : RoomDatabase() {
     abstract fun produccionDao(): ProduccionDao
     abstract fun configuracionProduccionDao(): ConfiguracionProduccionDao
     abstract fun repartidorDao(): RepartidorDao
+    abstract fun seguridadConfigDao(): SeguridadConfigDao
 }

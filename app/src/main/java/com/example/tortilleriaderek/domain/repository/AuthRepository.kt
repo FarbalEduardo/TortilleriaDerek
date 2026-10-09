@@ -1,6 +1,8 @@
 package com.example.tortilleriaderek.domain.repository
 
+import com.example.tortilleriaderek.domain.model.SeguridadConfig
 import com.example.tortilleriaderek.domain.model.Usuario
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Creado por 🏗️ mobile-developer.
@@ -8,4 +10,14 @@ import com.example.tortilleriaderek.domain.model.Usuario
  */
 interface AuthRepository {
     suspend fun login(username: String, passwordRaw: String): Result<Usuario>
+    suspend fun loginConPin(pinRaw: String): Result<Usuario>
+    suspend fun loginRapidoAdminBiometria(): Result<Usuario>
+
+    fun getSeguridadConfig(): Flow<SeguridadConfig>
+    suspend fun verificarMasterKey(claveRaw: String): Boolean
+    suspend fun restablecerPinAdminConMasterKey(claveMaestraRaw: String, nuevoPin: String): Result<Unit>
+    suspend fun setBiometriaHabilitada(habilitada: Boolean)
+    suspend fun registrarIntentoFallido(): Int
+    suspend fun resetearIntentosFallidos()
 }
+

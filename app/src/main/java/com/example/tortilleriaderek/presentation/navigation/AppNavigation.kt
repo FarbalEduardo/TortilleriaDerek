@@ -76,6 +76,9 @@ fun AppNavigation(
                     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
                     val backupViewModel = hiltViewModel<com.example.tortilleriaderek.presentation.backup.BackupViewModel>()
 
+                    val context = androidx.compose.ui.platform.LocalContext.current
+                    val activity = context as? android.app.Activity
+
                     LaunchedEffect(Unit) {
                         viewModel.effect.collect { effect ->
                             when (effect) {
@@ -91,7 +94,21 @@ fun AppNavigation(
                                     navController.navigate(Screen.ConfiguracionDesdeLogin)
                                 }
                                 is LoginUiEffect.ShowError -> {
-                                    // Mostrar mensaje de error
+                                    android.widget.Toast.makeText(context, effect.message, android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                                is LoginUiEffect.ShowToast -> {
+                                    android.widget.Toast.makeText(context, effect.message, android.widget.Toast.LENGTH_SHORT).show()
+                                }
+                                LoginUiEffect.IniciarBiometricPrompt -> {
+                                    if (activity != null) {
+                                        com.example.tortilleriaderek.ui.components.login.BiometricAuthHelper.autenticar(
+                                            activity = activity,
+                                            onExito = { viewModel.onBiometriaAutenticadaExitosamente() },
+                                            onError = { error ->
+                                                android.widget.Toast.makeText(context, error, android.widget.Toast.LENGTH_SHORT).show()
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }

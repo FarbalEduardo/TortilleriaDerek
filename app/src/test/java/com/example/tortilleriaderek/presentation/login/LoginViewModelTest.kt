@@ -30,15 +30,30 @@ class LoginViewModelTest {
     private val testDispatcher = StandardTestDispatcher()
     
     private lateinit var loginUseCase: LoginUseCase
+    private lateinit var loginPinUseCase: com.example.tortilleriaderek.domain.usecase.LoginPinUseCase
+    private lateinit var recuperarAccesoMasterKeyUseCase: com.example.tortilleriaderek.domain.usecase.RecuperarAccesoMasterKeyUseCase
     private lateinit var abrirTurnoUseCase: AbrirTurnoUseCase
+    private lateinit var authRepository: com.example.tortilleriaderek.domain.repository.AuthRepository
     private lateinit var viewModel: LoginViewModel
 
     @Before
     fun setUp() {
         Dispatchers.setMain(testDispatcher)
         loginUseCase = mockk()
-        abrirTurnoUseCase = mockk(relaxed = true) // Relaxed para no tener que mockear void returns
-        viewModel = LoginViewModel(loginUseCase, abrirTurnoUseCase)
+        loginPinUseCase = mockk(relaxed = true)
+        recuperarAccesoMasterKeyUseCase = mockk(relaxed = true)
+        abrirTurnoUseCase = mockk(relaxed = true)
+        authRepository = mockk(relaxed = true)
+        io.mockk.every { authRepository.getSeguridadConfig() } returns kotlinx.coroutines.flow.flowOf(
+            com.example.tortilleriaderek.domain.model.SeguridadConfig()
+        )
+        viewModel = LoginViewModel(
+            loginUseCase = loginUseCase,
+            loginPinUseCase = loginPinUseCase,
+            recuperarAccesoMasterKeyUseCase = recuperarAccesoMasterKeyUseCase,
+            abrirTurnoUseCase = abrirTurnoUseCase,
+            authRepository = authRepository
+        )
     }
 
     @After

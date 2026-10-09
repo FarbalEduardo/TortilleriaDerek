@@ -74,6 +74,9 @@ object DataModule {
 
     @Provides
     fun provideRepartidorDao(database: TortilleriaDatabase): com.example.tortilleriaderek.data.local.dao.RepartidorDao = database.repartidorDao()
+
+    @Provides
+    fun provideSeguridadConfigDao(database: TortilleriaDatabase): com.example.tortilleriaderek.data.local.dao.SeguridadConfigDao = database.seguridadConfigDao()
 }
 
 @Module

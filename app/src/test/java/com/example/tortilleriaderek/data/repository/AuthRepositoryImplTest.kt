@@ -18,12 +18,14 @@ import org.junit.Test
 class AuthRepositoryImplTest {
 
     private lateinit var usuarioDao: UsuarioDao
+    private lateinit var seguridadConfigDao: com.example.tortilleriaderek.data.local.dao.SeguridadConfigDao
     private lateinit var authRepository: AuthRepositoryImpl
 
     @Before
     fun setUp() {
-        usuarioDao = mockk()
-        authRepository = AuthRepositoryImpl(usuarioDao)
+        usuarioDao = mockk(relaxed = true)
+        seguridadConfigDao = mockk(relaxed = true)
+        authRepository = AuthRepositoryImpl(usuarioDao, seguridadConfigDao)
     }
 
     @Test

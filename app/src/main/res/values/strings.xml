@@ -1,7 +1,7 @@
 <resources>
     <!-- General & App -->
     <string name="app_name">Tortillería Derek</string>
-    <string name="login_desarrollada_por">Desarrollada por </string>
+    <string name="login_desarrollada_por">"Desarrollada por "</string>
     <string name="btn_cancelar">Cancelar</string>
     <string name="btn_aceptar">Aceptar</string>
     <string name="btn_confirmar">Confirmar</string>
@@ -155,4 +155,31 @@
     <string name="config_respaldo_subtitulo">Exportación e importación segura de base de datos SQLite</string>
     <string name="config_respaldo_btn_exportar">Exportar Base de Datos</string>
     <string name="config_respaldo_btn_importar">Importar Base de Datos</string>
+
+    <!-- Login, PIN, Biometría y Clave Maestra -->
+    <string name="login_titulo">Acceso al Sistema</string>
+    <string name="login_subtitulo">Ingresa tu PIN o utiliza el lector de huella</string>
+    <string name="login_pin_placeholder">Ingresa tu PIN numérico</string>
+    <string name="login_btn_biometria_desc">Acceso con Huella Dactilar</string>
+    <string name="login_olvidaste_pin">¿Problemas de acceso? Usar Clave Maestra</string>
+    <string name="login_bloqueo_aviso">Sistema bloqueado por intentos fallidos (%1$d s restantes)</string>
+    <string name="login_modo_turno">Abrir Turno</string>
+    <string name="login_modo_turno_desc">Inicia jornada operativa para registrar ventas en mostrador y reparto</string>
+    <string name="login_modo_consulta">Solo Consulta</string>
+    <string name="login_modo_consulta_desc">Revisa métricas e histórico sin alterar el turno ni caja activa</string>
+    <string name="login_verificando">Verificando credenciales...</string>
+    <string name="login_iniciar_sesion">Iniciar Sesión</string>
+    <string name="login_turno_cerrado">TURNO CERRADO</string>
+    <string name="login_sistema_seguro">Sistema de Control Seguro • v1.0</string>
+
+    <string name="dialog_recuperacion_titulo">Recuperación de Acceso Offline</string>
+    <string name="dialog_recuperacion_subtitulo">Ingresa la Clave Maestra de Emergencia para redefinir el PIN del Administrador sin perder datos.</string>
+    <string name="dialog_recuperacion_label_master_key">Clave Maestra de Rescate</string>
+    <string name="dialog_recuperacion_label_nuevo_pin">Nuevo PIN de Administrador (mínimo 4 dígitos)</string>
+    <string name="dialog_recuperacion_label_confirmar_pin">Confirmar Nuevo PIN</string>
+    <string name="dialog_recuperacion_btn_restablecer">Restablecer PIN y Acceder</string>
+    <string name="dialog_recuperacion_exito">¡PIN restablecido con éxito! Ya puedes iniciar sesión con tu nuevo PIN.</string>
+    <string name="dialog_recuperacion_error_no_coinciden">Los PINs ingresados no coinciden.</string>
+    <string name="dialog_recuperacion_error_longitud">El PIN debe contener al menos 4 números.</string>
+    <string name="dialog_recuperacion_error_clave_invalida">La Clave Maestra de Rescate es incorrecta.</string>
 </resources>

@@ -19,7 +19,7 @@ class MigrationsTest {
     @Test
     fun allMigrations_contieneMigracionesCompletasDesdeVersionesPrevias() {
         val migraciones = Migrations.ALL_MIGRATIONS
-        assertEquals(9, migraciones.size)
+        assertEquals(13, migraciones.size)
 
         val startVersions = migraciones.map { it.startVersion }.toSet()
         val endVersions = migraciones.map { it.endVersion }.toSet()
@@ -31,8 +31,9 @@ class MigrationsTest {
         assertTrue("Debe soportar migrar desde v5", startVersions.contains(5))
         assertTrue("Debe soportar migrar desde v6", startVersions.contains(6))
         assertTrue("Debe soportar migrar desde v7", startVersions.contains(7))
+        assertTrue("Debe soportar migrar desde v8", startVersions.contains(8))
 
-        assertTrue("Las migraciones convergen en versiones estables 7 y 8", endVersions.contains(7) && endVersions.contains(8))
+        assertTrue("Las migraciones convergen en versiones estables 7, 8 y 9", endVersions.contains(7) && endVersions.contains(8) && endVersions.contains(9))
     }
 
     @Test

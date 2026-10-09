@@ -1,0 +1,722 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 9,
+    "identityHash": "9c87c146ccd197e36d21a644e4728387",
+    "entities": [
+      {
+        "tableName": "turnos",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `folioCorte` TEXT NOT NULL, `fechaDiaTexto` TEXT NOT NULL, `numeroTurnoDia` INTEGER NOT NULL, `fechaApertura` INTEGER NOT NULL, `fechaCierre` INTEGER, `estado` TEXT NOT NULL, `usuarioId` TEXT NOT NULL, `usuarioCierreId` TEXT, `fondoInicial` REAL NOT NULL, `totalVentasMostrador` REAL NOT NULL, `totalCobradoReparto` REAL NOT NULL, `totalVentas` REAL NOT NULL, `efectivoEsperado` REAL NOT NULL, `efectivoContado` REAL NOT NULL, `diferenciaArqueo` REAL NOT NULL, `notasCierre` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folioCorte",
+            "columnName": "folioCorte",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaDiaTexto",
+            "columnName": "fechaDiaTexto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroTurnoDia",
+            "columnName": "numeroTurnoDia",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaApertura",
+            "columnName": "fechaApertura",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaCierre",
+            "columnName": "fechaCierre",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioCierreId",
+            "columnName": "usuarioCierreId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fondoInicial",
+            "columnName": "fondoInicial",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalVentasMostrador",
+            "columnName": "totalVentasMostrador",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalCobradoReparto",
+            "columnName": "totalCobradoReparto",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "totalVentas",
+            "columnName": "totalVentas",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "efectivoEsperado",
+            "columnName": "efectivoEsperado",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "efectivoContado",
+            "columnName": "efectivoContado",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "diferenciaArqueo",
+            "columnName": "diferenciaArqueo",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notasCierre",
+            "columnName": "notasCierre",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "ventas",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `turnoId` TEXT NOT NULL, `folioTicket` TEXT NOT NULL, `tipo` TEXT NOT NULL, `fecha` INTEGER NOT NULL, `hora` TEXT NOT NULL, `detalleProductos` TEXT NOT NULL, `total` REAL NOT NULL, `metodoPago` TEXT NOT NULL, `usuarioId` TEXT NOT NULL, `usuarioNombre` TEXT NOT NULL, `estado` TEXT NOT NULL, `nombreRepartidor` TEXT, `motoAsignada` TEXT, `nombreRuta` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "turnoId",
+            "columnName": "turnoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folioTicket",
+            "columnName": "folioTicket",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipo",
+            "columnName": "tipo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "detalleProductos",
+            "columnName": "detalleProductos",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "total",
+            "columnName": "total",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "metodoPago",
+            "columnName": "metodoPago",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioNombre",
+            "columnName": "usuarioNombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "estado",
+            "columnName": "estado",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreRepartidor",
+            "columnName": "nombreRepartidor",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "motoAsignada",
+            "columnName": "motoAsignada",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nombreRuta",
+            "columnName": "nombreRuta",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "configuracion_produccion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `pesoBultoHarinaKg` REAL NOT NULL, `kgMasaPorBulto` REAL NOT NULL, `rendimientoTortillaPorBulto` REAL NOT NULL, `mermaToleradaKgPorBulto` REAL NOT NULL, `porcentajeMermaTolerada` REAL NOT NULL, `precioKilo` REAL NOT NULL, `precioPaquete` REAL NOT NULL, `precioMedioPaquete` REAL NOT NULL, `precioPaqueteRepartidor` REAL NOT NULL, `pesoPaqueteGramos` INTEGER NOT NULL, `pesoMedioPaqueteGramos` INTEGER NOT NULL, `fechaModificacion` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pesoBultoHarinaKg",
+            "columnName": "pesoBultoHarinaKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kgMasaPorBulto",
+            "columnName": "kgMasaPorBulto",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rendimientoTortillaPorBulto",
+            "columnName": "rendimientoTortillaPorBulto",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mermaToleradaKgPorBulto",
+            "columnName": "mermaToleradaKgPorBulto",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "porcentajeMermaTolerada",
+            "columnName": "porcentajeMermaTolerada",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioKilo",
+            "columnName": "precioKilo",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioPaquete",
+            "columnName": "precioPaquete",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioMedioPaquete",
+            "columnName": "precioMedioPaquete",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "precioPaqueteRepartidor",
+            "columnName": "precioPaqueteRepartidor",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pesoPaqueteGramos",
+            "columnName": "pesoPaqueteGramos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pesoMedioPaqueteGramos",
+            "columnName": "pesoMedioPaqueteGramos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaModificacion",
+            "columnName": "fechaModificacion",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "usuarios",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `username` TEXT NOT NULL, `passwordHash` TEXT NOT NULL, `salt` TEXT NOT NULL, `rol` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "username",
+            "columnName": "username",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "passwordHash",
+            "columnName": "passwordHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "salt",
+            "columnName": "salt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rol",
+            "columnName": "rol",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "tandas_produccion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `turnoId` TEXT NOT NULL, `fecha` INTEGER NOT NULL, `hora` TEXT NOT NULL, `bultosHarina` INTEGER NOT NULL, `pesoBultoKg` REAL NOT NULL, `kgMasaCruda` REAL NOT NULL, `kgTortillaEstimada` REAL NOT NULL, `usuarioId` TEXT NOT NULL, `usuarioNombre` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "turnoId",
+            "columnName": "turnoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bultosHarina",
+            "columnName": "bultosHarina",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pesoBultoKg",
+            "columnName": "pesoBultoKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kgMasaCruda",
+            "columnName": "kgMasaCruda",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kgTortillaEstimada",
+            "columnName": "kgTortillaEstimada",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioNombre",
+            "columnName": "usuarioNombre",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "mermas_produccion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `turnoId` TEXT NOT NULL, `fecha` INTEGER NOT NULL, `hora` TEXT NOT NULL, `kgMerma` REAL NOT NULL, `motivo` TEXT NOT NULL, `usuarioId` TEXT NOT NULL, `usuarioNombre` TEXT NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "turnoId",
+            "columnName": "turnoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fecha",
+            "columnName": "fecha",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hora",
+            "columnName": "hora",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "kgMerma",
+            "columnName": "kgMerma",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "motivo",
+            "columnName": "motivo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioId",
+            "columnName": "usuarioId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "usuarioNombre",
+            "columnName": "usuarioNombre",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "repartidores",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `numeroBadge` TEXT NOT NULL, `nombre` TEXT NOT NULL, `moto` TEXT NOT NULL, `detalleRuta` TEXT NOT NULL, `fechaCreacion` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroBadge",
+            "columnName": "numeroBadge",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moto",
+            "columnName": "moto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "detalleRuta",
+            "columnName": "detalleRuta",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaCreacion",
+            "columnName": "fechaCreacion",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "rutas_repartidores",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `turnoId` TEXT NOT NULL, `moto` TEXT NOT NULL, `repartidorNombre` TEXT NOT NULL, `nombreRuta` TEXT NOT NULL, `status` TEXT NOT NULL, `cargaInicialKg` REAL NOT NULL, `pendienteCobro` REAL NOT NULL, `devolucionKg` REAL NOT NULL, `entregadoKg` REAL NOT NULL, `cobrado` REAL NOT NULL, `folioTicket` TEXT, `horaSalida` TEXT, `horaLiquidacion` TEXT, `paquetesCargados` INTEGER NOT NULL, `paquetesDevueltos` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "turnoId",
+            "columnName": "turnoId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "moto",
+            "columnName": "moto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "repartidorNombre",
+            "columnName": "repartidorNombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombreRuta",
+            "columnName": "nombreRuta",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cargaInicialKg",
+            "columnName": "cargaInicialKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "pendienteCobro",
+            "columnName": "pendienteCobro",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "devolucionKg",
+            "columnName": "devolucionKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "entregadoKg",
+            "columnName": "entregadoKg",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cobrado",
+            "columnName": "cobrado",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "folioTicket",
+            "columnName": "folioTicket",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "horaSalida",
+            "columnName": "horaSalida",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "horaLiquidacion",
+            "columnName": "horaLiquidacion",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "paquetesCargados",
+            "columnName": "paquetesCargados",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "paquetesDevueltos",
+            "columnName": "paquetesDevueltos",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "seguridad_config",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `masterKeyHash` TEXT NOT NULL, `masterKeySalt` TEXT NOT NULL, `biometriaHabilitada` INTEGER NOT NULL, `intentosFallidos` INTEGER NOT NULL, `timestampBloqueo` INTEGER NOT NULL, `fechaModificacion` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "masterKeyHash",
+            "columnName": "masterKeyHash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "masterKeySalt",
+            "columnName": "masterKeySalt",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "biometriaHabilitada",
+            "columnName": "biometriaHabilitada",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "intentosFallidos",
+            "columnName": "intentosFallidos",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "timestampBloqueo",
+            "columnName": "timestampBloqueo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fechaModificacion",
+            "columnName": "fechaModificacion",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c87c146ccd197e36d21a644e4728387')"
+    ]
+  }
+}

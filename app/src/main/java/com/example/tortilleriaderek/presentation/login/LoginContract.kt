@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 /**
  * Creado por 🏗️ mobile-developer y 🎨 design-ui-expert.
- * Define el contrato MVI (State, Event, Effect) para la pantalla de Login.
+ * Define el contrato MVI (State, Event, Effect) para la pantalla de Login con soporte
+ * de PIN numérico, biometría acelerada y recuperación por Clave Maestra.
  */
 
 enum class LoginMode {
@@ -17,15 +18,25 @@ data class LoginUiState(
     val isLoading: Boolean = false,
     val usernameInput: String = "",
     val passwordInput: String = "",
+    val pinInput: String = "",
     val selectedMode: LoginMode = LoginMode.ABRIR_TURNO,
     val isPasswordVisible: Boolean = false,
     val isTurnoCerrado: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val tieneBiometria: Boolean = false,
+    val estaBloqueado: Boolean = false,
+    val segundosRestantesBloqueo: Long = 0L,
+    val showMasterKeyDialog: Boolean = false,
+    val masterKeyError: String? = null,
+    val masterKeyCargando: Boolean = false
 )
 
 sealed interface LoginUiEvent {
     data class OnUsernameChanged(val username: String) : LoginUiEvent
     data class OnPasswordChanged(val password: String) : LoginUiEvent
+    data class OnDigitoPresionado(val digito: String) : LoginUiEvent
+    object OnBorrarDigito : LoginUiEvent
+    object OnBiometriaClick : LoginUiEvent
     data class OnModeSelected(val mode: LoginMode) : LoginUiEvent
     object OnTogglePasswordVisibility : LoginUiEvent
     object OnIniciarSesionClick : LoginUiEvent
@@ -33,10 +44,15 @@ sealed interface LoginUiEvent {
     object OnSoloConsultaClick : LoginUiEvent
     object OnSettingsClick : LoginUiEvent
     object OnBackupClick : LoginUiEvent
+    object OnAbrirDialogoMasterKey : LoginUiEvent
+    object OnCerrarDialogoMasterKey : LoginUiEvent
+    data class OnRestablecerPinMasterKey(val masterKey: String, val nuevoPin: String) : LoginUiEvent
 }
 
 sealed interface LoginUiEffect {
     data class ShowError(val message: String) : LoginUiEffect
+    data class ShowToast(val message: String) : LoginUiEffect
+    object IniciarBiometricPrompt : LoginUiEffect
     object NavigateToMostrador : LoginUiEffect
     object NavigateToMetricas : LoginUiEffect
     object NavigateToSettings : LoginUiEffect
